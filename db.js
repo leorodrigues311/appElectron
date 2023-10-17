@@ -1,5 +1,9 @@
+import chaveAPI from "./script.js"
 
 const pg = require ("pg")
+
+var api = chaveAPI
+var app =  0
 
  //prametros de conexão com o banco de dados inova passados abaixo
 
@@ -10,7 +14,7 @@ async function connectDb(){
         password: "inova@613188#",
         host: "127.0.0.1",
         port: 5432,
-        database: "inova"
+        database: "1"
 
     })
 
@@ -33,5 +37,23 @@ async function connectDb(){
     return r
 
 }
+
+
+function alteraChaveApp(){
+    const Client = require ("pg").Client
+    const cliente = new pg.Client({
+        user: "postgres",
+        password: "inova@613188#",
+        host: "127.0.0.1",
+        port: 5432,
+        database: "1"
+        })
+
+    cliente.query("update configlojaintegrada set chaveapi =",api,", chaveapp =",app )
+
+}
+const btnSalvaConfig = document.getElementById('closeModalButton');
+btnSalvaConfig.addEventListener("click", alteraChaveApp)
+
 
 export default connectDb()
