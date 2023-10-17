@@ -1,9 +1,7 @@
-import {chaveAPI} from "./script.js"
+import {chaveAPI, chaveApp} from "./script.js"
 
 const pg = require ("pg")
 
-var api = chaveAPI
-var app =  0
 
  //prametros de conexão com o banco de dados inova passados abaixo
 
@@ -41,6 +39,7 @@ async function connectDb(){
 
 function alteraChaveApp(){
     let APIKey = chaveAPI
+    let APPKey = chaveApp
     const Client = require ("pg").Client
     const cliente = new pg.Client({
         user: "postgres",
@@ -49,8 +48,8 @@ function alteraChaveApp(){
         port: 5432,
         database: "1"
         })
-    console.log(APIKey)
-    cliente.query("update configlojaintegrada set chaveid = 1 chaveapi =",APIKey,", chaveapp =",app )
+    console.log(APIKey, APPKey)
+    cliente.query("INSERT INTO configlojaintegrada (chaveid, chaveapi, chaveapp) VALUES  1,",APIKey,",", APPKey)
 
 }
 const btnSalvaConfig = document.getElementById('closeModalButton');
