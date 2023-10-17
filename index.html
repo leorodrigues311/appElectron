@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="./script.js" type="module"></script>
+  
+  
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <title>Loja integrada</title>
+</head>
+<body>
+  <div class="flex justify-center items-top">
+    <p class="font-mono text-2xl font-bold text-blue-600">Painel de integração</p>
+  </div>
+  <div class="flex justify-center items-top">
+    <p class="font-mono text-2xl font-bold text-blue-600">Loja integrada</p>
+  </div>
+  
+  <div class="flex justify-center items-center h-screen">
+    <div class="border p-4 rounded-lg shadow-md">
+      <button id = "btnComparaEstoque" class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2">Comparar com Inova</button>
+      <button id = "btnEnviaEstoque" class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2">Enviar Estoque</button>
+      <button onlcick="cadastraProduto()" class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2">Cadastrar produtos novos</button>
+      <button id="openModalButton" class="relative block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2">Configurações</button>
+    </div>
+  </div>
+  <div id="modal" class="hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h2 class="text-xl font-bold mb-2">Configurações</h2>
+      <div class="mb-4">
+        <p class="mb-2">Porta:</p>
+        <textarea class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" rows="1" placeholder="Porta..."></textarea>
+      </div>
+      <div class="mb-4">
+        <p class="mb-2">Banco:</p>
+        <textarea class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" rows="1" placeholder="Banco..."></textarea>
+      </div>
+      <button id="closeModalButton" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Fechar</button>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+  <script>
+    const openModalButton = document.getElementById('openModalButton');
+    const closeModalButton = document.getElementById('closeModalButton');
+    const modal = document.getElementById('modal');
+
+    openModalButton.addEventListener('click', () => {
+      modal.classList.remove('hidden');
+    });
+
+    closeModalButton.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+    
+  </script>
+</body>
+</html>
