@@ -1,4 +1,4 @@
-import {chaveAPI, chaveApp} from "./script.js"
+import {chaveAPI, chaveApp, database, portDatabase} from "./script.js"
 
 const pg = require ("pg")
 
@@ -11,8 +11,8 @@ async function connectDb(){
         user: "postgres",
         password: "inova@613188#",
         host: "127.0.0.1",
-        port: 5432,
-        database: "1"
+        port: portDatabase,
+        database: database
 
     })
 
@@ -38,19 +38,22 @@ async function connectDb(){
 
 
 function alteraChaveApp(){
-    let APIKey = chaveAPI
-    let APPKey = chaveApp
+    let APIkey = chaveAPI
+    let APPkey = chaveApp
+    const text = 'update configlojaintegrada set chaveapi = $1, chaveapp =$2'
+    const values = [APIkey, APPkey]
     const Client = require ("pg").Client
     const cliente = new pg.Client({
         user: "postgres",
         password: "inova@613188#",
         host: "127.0.0.1",
-        port: 5432,
-        database: "1"
+        port: portDatabase,
+        database: database
         })
-    console.log(APIKey, APPKey)
+
     cliente.connect()
-    cliente.query("update configlojaintegrada set chaveapi = ",APIKey,", chaveapp =",APPKey,")")
+    console.log(typeof(database),typeof(portDatabase))
+    cliente.query(text, values)
 
 }
 const btnSalvaConfig = document.getElementById('closeModalButton');
