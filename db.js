@@ -49,7 +49,8 @@ function alteraChaveApp(){
         database: "1"
         })
     console.log(APIKey, APPKey)
-    cliente.query("INSERT INTO configlojaintegrada (chaveid, chaveapi, chaveapp) VALUES  1,",APIKey,",", APPKey)
+    cliente.connect()
+    cliente.query("update configlojaintegrada set chaveapi = ",APIKey,", chaveapp =",APPKey,")")
 
 }
 const btnSalvaConfig = document.getElementById('closeModalButton');
