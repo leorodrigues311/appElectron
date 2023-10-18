@@ -34,7 +34,6 @@ async function connectDb(){
     .finally(() => cliente.end())
     return r
 
-    
 }
 
 

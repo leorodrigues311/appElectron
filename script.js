@@ -12,7 +12,6 @@ var putEstoque = new Array
 const btnSalvaConfig = document.getElementById('closeModalButton');
 
 
-
 function defineChaveAPI() {
    chaveAPI = document.querySelector('#apikey').value
    chaveApp = document.querySelector('#appkey').value
