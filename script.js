@@ -2,10 +2,26 @@
 import connectDb from "./db.js" //importando o retorno da função em connectDb.js
 
 
-var chaveAPI = '06738b02b56b29a661c8'// Esta é a chave que criamos dentro do login de cada usuário da loja
-var chaveApp = 'ed102c0b-ff23-4826-b296-cfd2c913b133' // Esta é a chave de aplicação da Inova
+var chaveAPI = 0 //'06738b02b56b29a661c8' Esta é a chave que criamos dentro do login de cada usuário da loja
+var chaveApp = 0 //'ed102c0b-ff23-4826-b296-cfd2c913b133' Esta é a chave de aplicação da Inova
+var database = '1'
+var portDatabase = 5432
 var baseUrl = 'https://api.awsli.com.br/v1/produto_estoque' // Essa é a URL de requisição do estoque
 var putEstoque = new Array
+
+const btnSalvaConfig = document.getElementById('closeModalButton');
+
+
+
+function defineChaveAPI() {
+   chaveAPI = document.querySelector('#apikey').value
+   chaveApp = document.querySelector('#appkey').value
+   database = document.querySelector('#databaseInova').value
+   portDatabase = document.querySelector('#databasePort').value
+}
+
+btnSalvaConfig.addEventListener("click",defineChaveAPI)
+
 
 var tableProdutosSql = await connectDb
 
@@ -20,8 +36,8 @@ async function consultaEstoque() {
 
 
   var headers = new Headers();
-  headers.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
-
+  headers.append("Authorization", "chave_api", APIKey, " aplicacao", appKey,);
+/*
 
   var requestOptions = {
     method: 'GET',
@@ -31,16 +47,10 @@ async function consultaEstoque() {
 
 
   const comparaProdutos = async () => {
-    console.log("clicou no botao")
+    alert('clicou envia estoque')
     var resposta = await fetch(url, requestOptions)
       .then(response => response.json())
       .catch(error => console.log('error', error))
-    //console.log("esta é a resposta", resposta, "fim da resposta")
-
-
-
-
-    console.log("aqui",tableProdutosSql)
 
 
     var inovaBarcodes = new Array
@@ -49,27 +59,17 @@ async function consultaEstoque() {
       inovaBarcodes.push(tableProdutosSql[i].produtocodigobarra)
     }
 
-    //console.log(inovaBarcodes)
-
     // tratando a resposta da API que foi salva na variavel 'resposta'
 
     let produtos = new Array// aqui ficam os produtos que são encontrados no banco de dados depois de comparados com a requisição
     let produtosNaoAdicionados = new Array //aqui ficam os produtos que não foram encontrados
-    let envioAjusteEstoque = new Array // aqui ficam os produtos prontos para ser enviados pra ajuste da loja integrada
-
-    //console.log("resposta",resposta)
-
 
     // este looping compara se os produtos que temos salvo na variável resposta são iguais aos produtos que temos dentro de nosso bando de dados (os produtos do banco de dados estão em tableProdutosSql)
     for (let i = 0; i < resposta['objects'].length; i = i + 1) {
 
       let verify = resposta['objects'][i].produto.replace('/api/v1/produto/','')
-      //console.log("variavel verify",verify)
-      //verify = verify.toString()
 
       var found = inovaBarcodes.includes(verify)
-      //console.log("found",found)
-
 
       if (found == true) {
 
@@ -78,7 +78,6 @@ async function consultaEstoque() {
           produto: tableProdutosSql[index].produtocodigobarra,
           estoque: tableProdutosSql[index].produtoqtdestoque
         })
-        //console.log(produtos)
 
       }
 
@@ -93,25 +92,21 @@ async function consultaEstoque() {
     for (let i = 0; i < produtos.length; i = i + 1) {
       envioAjusteEstoque.push(produtos[i])
     }
-    //console.log("envio de ajuste", envioAjusteEstoque)
-
-    //console.log("não adicionados",produtosNaoAdicionados)
 
     putEstoque = envioAjusteEstoque
-    //console.log(putEstoque)
 
   }
 
   await comparaProdutos()
+*/
 
 }
 
-
-
+/*
 
 function enviaEstoque() {
 
-  alert('clicou')
+  alert('clicou envia estoque')
   var myHeaders = new Headers();
   myHeaders.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
   myHeaders.append("Content-Type", "application/json");
@@ -153,8 +148,8 @@ function enviaEstoque() {
 
 await consultaEstoque()
 
-
-btnEnviaEstoque.addEventListener("click", enviaEstoque)
+*/
+btnEnviaEstoque.addEventListener("click", consultaEstoque)
 
 
 
@@ -313,7 +308,7 @@ btnEnviaEstoque.addEventListener("click", enviaEstoque)
 
 */ 
 
-
+/*
 function sincronizador(){
 
   let url = baseUrl
@@ -401,8 +396,6 @@ for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
 }
 
 await cadastraProduto()
+*/
 
-
-
- 
-btnEnviaEstoque.addEventListener("click", enviaEstoque)
+export {chaveAPI, chaveApp, database, portDatabase};
