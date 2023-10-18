@@ -3,7 +3,7 @@ import {chaveAPI, chaveApp, database, portDatabase, baseUrl} from "./connect.js"
 const pg = require ("pg")
 
 
-const btnSalvaConfig = document.getElementById('closeModalButton');
+const btnSalvaConfig = document.getElementById('saveConfigButton');
 btnSalvaConfig.addEventListener("click", alteraChaveApp)
 btnSalvaConfig.addEventListener("click", criaTabela)
 

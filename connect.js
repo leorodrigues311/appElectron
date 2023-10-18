@@ -6,7 +6,7 @@ var baseUrl = 'https://api.awsli.com.br/v1/produto_estoque' // Essa é a URL de 
 
 
 
-const btnSalvaConfig = document.getElementById('closeModalButton');
+const btnSalvaConfig = document.getElementById('saveConfigButton');
 
 function defineChaveAPI() {
    chaveAPI = document.querySelector('#apikey').value
