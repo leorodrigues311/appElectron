@@ -1,4 +1,4 @@
-import {chaveAPI, chaveApp, database, portDatabase} from "./script.js"
+import {chaveAPI, chaveApp, database, portDatabase, baseUrl} from "./connect.js"
 
 const pg = require ("pg")
 
@@ -13,8 +13,7 @@ async function connectDb(){
         host: "127.0.0.1",
         port: portDatabase,
         database: database
-
-    })
+        })
 
     //armazena o retorno da função query dentro da variável "resultado"
 
@@ -27,7 +26,6 @@ async function connectDb(){
         return resultado
 
     })
-
 
 
     //finaliza a conexão com o banco de dados depois de rodar a query
@@ -52,9 +50,10 @@ function alteraChaveApp(){
         })
 
     cliente.connect()
-    console.log(typeof(database),typeof(portDatabase))
+    console.log(typeof(database),database,typeof(portDatabase),portDatabase)
     cliente.query(text, values)
-
+    
+    .finally(() => cliente.end())
 }
 const btnSalvaConfig = document.getElementById('closeModalButton');
 btnSalvaConfig.addEventListener("click", alteraChaveApp)

@@ -2,25 +2,7 @@
 import connectDb from "./db.js" //importando o retorno da função em connectDb.js
 
 
-var chaveAPI = 0 //'06738b02b56b29a661c8' Esta é a chave que criamos dentro do login de cada usuário da loja
-var chaveApp = 0 //'ed102c0b-ff23-4826-b296-cfd2c913b133' Esta é a chave de aplicação da Inova
-var database = '1'
-var portDatabase = 5432
-var baseUrl = 'https://api.awsli.com.br/v1/produto_estoque' // Essa é a URL de requisição do estoque
 var putEstoque = new Array
-
-const btnSalvaConfig = document.getElementById('closeModalButton');
-
-
-function defineChaveAPI() {
-   chaveAPI = document.querySelector('#apikey').value
-   chaveApp = document.querySelector('#appkey').value
-   database = document.querySelector('#databaseInova').value
-   portDatabase = document.querySelector('#databasePort').value
-}
-
-btnSalvaConfig.addEventListener("click",defineChaveAPI)
-
 
 var tableProdutosSql = await connectDb
 
@@ -396,5 +378,3 @@ for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
 
 await cadastraProduto()
 */
-
-export {chaveAPI, chaveApp, database, portDatabase};
