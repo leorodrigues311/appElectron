@@ -11,14 +11,14 @@ const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 
 async function consultaEstoque() {
 
-  let APIKey = chaveAPI
-  let appKey = chaveApp
-  let url = baseUrl
+  let APIKey 
+  let appKey
+  let url
 
 
   var headers = new Headers();
   headers.append("Authorization", "chave_api", APIKey, " aplicacao", appKey,);
-/*
+
 
   var requestOptions = {
     method: 'GET',
@@ -79,17 +79,17 @@ async function consultaEstoque() {
   }
 
   await comparaProdutos()
-*/
+
 
 }
 
-/*
+
 
 function enviaEstoque() {
 
   alert('clicou envia estoque')
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
+  myHeaders.append("Authorization", "chave_api", APIKey, " aplicacao", appKey,);
   myHeaders.append("Content-Type", "application/json");
 
   for (let i = 0; i < putEstoque.length; i = i + 1) {
@@ -129,7 +129,7 @@ function enviaEstoque() {
 
 await consultaEstoque()
 
-*/
+
 btnEnviaEstoque.addEventListener("click", consultaEstoque)
 
 
@@ -318,13 +318,13 @@ function sincronizador(){
 }
 
 
-
+*/
 
 async function cadastraProduto(){
   
 
 var myHeaders = new Headers();
-myHeaders.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
+myHeaders.append("Authorization", "chave_api", APIKey, " aplicacao", appKey,);
 myHeaders.append("Content-Type", "application/json");
 
 
@@ -377,4 +377,4 @@ for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
 }
 
 await cadastraProduto()
-*/
+
