@@ -7,6 +7,7 @@ var putEstoque = new Array
 var tableProdutosSql = await connectDb
 
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
+btnEnviaEstoque.addEventListener("click", consultaEstoque)
 
 
 async function consultaEstoque() {
@@ -125,12 +126,6 @@ function enviaEstoque() {
 
   }
 }
-
-
-await consultaEstoque()
-
-
-btnEnviaEstoque.addEventListener("click", consultaEstoque)
 
 
 

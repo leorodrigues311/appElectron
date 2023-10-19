@@ -7,7 +7,7 @@ var database = 'inova'
 var portDatabase = 5432
 var baseUrl = 'https://api.awsli.com.br/v1/produto_estoque' // Essa é a URL de requisição do estoque
 
-window.addEventListener("load", recuperaChaveBanco)
+document.addEventListener("load", recuperaChaveBanco)
 
 
 async function recuperaChaveBanco () {
@@ -23,10 +23,10 @@ async function recuperaChaveBanco () {
     cliente.connect()   
     chaveAPI = await cliente.query("select chaveapi from configlojaintegrada")
     chaveApp = await cliente.query("select chaveapp from configlojaintegrada")
-    chaveAPI = chaveAPI['rows'][0]
-    console.log(chaveAPI)
-    //document.getElementById("#apikey").value = chaveAPI;
-    //document.getElementById("#appkey").value = chaveApp;
+    chaveAPI = chaveAPI['rows'][0].chaveapi
+    chaveApp = chaveApp['rows'][0].chaveapp
+    document.getElementById("#apikey").placeholder = chaveAPI;
+    document.getElementById("#appkey").placeholder = chaveApp;
 
 }
 
