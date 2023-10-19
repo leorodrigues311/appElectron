@@ -70,6 +70,8 @@ async function connectDb(){
 function alteraChaveApp(){
     let APIkey = chaveAPI
     let APPkey = chaveApp
+    let db = database
+    let dbPort = portDatabase
     const text = 'update configlojaintegrada set chaveapi = $1, chaveapp =$2'
     const values = [APIkey, APPkey]
     const Client = require ("pg").Client

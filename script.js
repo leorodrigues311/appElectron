@@ -1,6 +1,12 @@
 
 import connectDb from "./db.js" //importando o retorno da função em connectDb.js
 
+var APIKey 
+var appKey
+var url
+
+
+
 
 var putEstoque = new Array
 
@@ -8,18 +14,13 @@ var tableProdutosSql = await connectDb
 
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", consultaEstoque)
+btnEnviaEstoque.addEventListener("click", cadastraProduto)
 
 
 async function consultaEstoque() {
 
-  let APIKey 
-  let appKey
-  let url
-
-
   var headers = new Headers();
   headers.append("Authorization", "chave_api", APIKey, " aplicacao", appKey,);
-
 
   var requestOptions = {
     method: 'GET',
@@ -27,13 +28,11 @@ async function consultaEstoque() {
     redirect: 'follow'
   };
 
-
   const comparaProdutos = async () => {
     alert('clicou envia estoque')
     var resposta = await fetch(url, requestOptions)
       .then(response => response.json())
       .catch(error => console.log('error', error))
-
 
     var inovaBarcodes = new Array
     for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
@@ -69,7 +68,6 @@ async function consultaEstoque() {
 
     }
 
-
     // este looping monta o json para ser enviado 
     for (let i = 0; i < produtos.length; i = i + 1) {
       envioAjusteEstoque.push(produtos[i])
@@ -83,7 +81,6 @@ async function consultaEstoque() {
 
 
 }
-
 
 
 function enviaEstoque() {
@@ -371,5 +368,5 @@ for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
 
 }
 
-await cadastraProduto()
+//await cadastraProduto()
 

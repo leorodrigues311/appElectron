@@ -15,5 +15,5 @@ app.on('ready', () => {
     });
 
     // Carrega a URL corretamente
-    mainWindow.loadURL(`C:/Users/leona/Desktop/OutroNome/OutroNome/appElectron/appElectron-1/index.html`);
+    mainWindow.loadFile(`index.html`);
 });

@@ -7,10 +7,11 @@ var database = 'inova'
 var portDatabase = 5432
 var baseUrl = 'https://api.awsli.com.br/v1/produto_estoque' // Essa é a URL de requisição do estoque
 
-document.addEventListener("load", recuperaChaveBanco)
+window.addEventListener("load", recuperaChaveBanco)
 
 
 async function recuperaChaveBanco () {
+    alert("entrou")
     const Client = require ("pg").Client
     const cliente = new pg.Client({
         user: "postgres",
@@ -25,8 +26,8 @@ async function recuperaChaveBanco () {
     chaveApp = await cliente.query("select chaveapp from configlojaintegrada")
     chaveAPI = chaveAPI['rows'][0].chaveapi
     chaveApp = chaveApp['rows'][0].chaveapp
-    document.getElementById("#apikey").placeholder = chaveAPI;
-    document.getElementById("#appkey").placeholder = chaveApp;
+    document.getElementById("apikey").value = chaveAPI;
+    document.getElementById("appkey").value = chaveApp;
 
 }
 
