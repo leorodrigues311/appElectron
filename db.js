@@ -21,7 +21,7 @@ async function criaTabela() {
 
     try{
         cliente.connect()
-        await cliente.query("CREATE TABLE configlojaintegrada (chaveid integer NOT NULL, chaveapi character varying(255), chaveapp character varying(255), CONSTRAINT configlojaintegrada_pk PRIMARY KEY (chaveid)) WITH (OIDS=FALSE);")
+        await cliente.query("CREATE TABLE configlojaintegrada (chaveid integer NOT NULL, bancoPorta character varying(255), bancoNome character varying(255), chaveapi character varying(255), chaveapp character varying(255), CONSTRAINT configlojaintegrada_pk PRIMARY KEY (chaveid)) WITH (OIDS=FALSE);")
         await cliente.query("INSERT INTO configlojaintegrada(chaveid) VALUES (1);")
         this.alert("Tabela criada com sucesso")
 
@@ -72,8 +72,8 @@ function alteraChaveApp(){
     let APPkey = chaveApp
     let db = database
     let dbPort = portDatabase
-    const text = 'update configlojaintegrada set chaveapi = $1, chaveapp =$2'
-    const values = [APIkey, APPkey]
+    const text = 'update configlojaintegrada set bancoporta = $1, banconome = $2, chaveapi = $3, chaveapp =$4'
+    const values = [dbPort, db, APIkey, APPkey]
     const Client = require ("pg").Client
     const cliente = new pg.Client({
         user: "postgres",

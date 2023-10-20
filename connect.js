@@ -24,10 +24,16 @@ async function recuperaChaveBanco () {
     cliente.connect()   
     chaveAPI = await cliente.query("select chaveapi from configlojaintegrada")
     chaveApp = await cliente.query("select chaveapp from configlojaintegrada")
+    database = await cliente.query("select banconome from configlojaintegrada")
+    portDatabase = await cliente.query("select bancoporta from configlojaintegrada")
     chaveAPI = chaveAPI['rows'][0].chaveapi
     chaveApp = chaveApp['rows'][0].chaveapp
+    database = database['rows'][0].banconome
+    portDatabase = portDatabase['rows'][0].bancoporta
     document.getElementById("apikey").value = chaveAPI;
     document.getElementById("appkey").value = chaveApp;
+    document.getElementById("databaseInova").value = database;
+    document.getElementById("databasePort").value = portDatabase;
 
 }
 
