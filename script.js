@@ -9,12 +9,12 @@ var url
 
 
 var putEstoque = new Array
+var produtosParaEnviar = new Array
 
 var tableProdutosSql = await connectDb
 
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", consultaEstoque)
-btnEnviaEstoque.addEventListener("click", cadastraProduto)
 
 
 async function consultaEstoque() {
@@ -45,18 +45,19 @@ async function consultaEstoque() {
     let produtos = new Array// aqui ficam os produtos que são encontrados no banco de dados depois de comparados com a requisição
     let produtosNaoAdicionados = new Array //aqui ficam os produtos que não foram encontrados
 
-    // este looping compara se os produtos que temos salvo na variável resposta são iguais aos produtos que temos dentro de nosso bando de dados (os produtos do banco de dados estão em tableProdutosSql)
+    // este looping compara se os produtos que temos salvo na variável resposta são iguais aos produtos que temos dentro de nosso banco de dados (os produtos do banco de dados estão em tableProdutosSql)
     for (let i = 0; i < resposta['objects'].length; i = i + 1) {
 
       let verify = resposta['objects'][i].produto.replace('/api/v1/produto/','')
 
-      var found = inovaBarcodes.includes(verify)
+      var found = inovaBarcodes.includes(verify) // essa linha retorna true ou false para a variável found (ele checa se encontrou o produto dentro de inovaBarcodes)
 
       if (found == true) {
 
         let index = inovaBarcodes.indexOf(verify)
         produtos.push({
           produto: tableProdutosSql[index].produtocodigobarra,
+          descricao:tableProdutosSql[index].produtodescricao,
           estoque: tableProdutosSql[index].produtoqtdestoque
         })
 
@@ -68,7 +69,11 @@ async function consultaEstoque() {
 
     }
 
+    produtosParaEnviar = produtos
+
     // este looping monta o json para ser enviado 
+
+    let envioAjusteEstoque = new Array
     for (let i = 0; i < produtos.length; i = i + 1) {
       envioAjusteEstoque.push(produtos[i])
     }

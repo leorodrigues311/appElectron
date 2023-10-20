@@ -29,15 +29,42 @@
   </div>
 
 
+  <div id="modalEnvioEstoque" class=" fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
+    <div class="bg-white p-12 rounded-lg shadow-md">
+      <h1 class="text-xl font-bold mb-2">Itens encontrados para ajustar estoque</h1>
+      <table>
+        <thead>
+            <tr>
+                <th>Codigo de Barras</th>
+                <th>Nome</th>
+                <th>Estoque Inova</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>78945651</td>
+                <td>Teste</td>
+                <td>25</td>
+            </tr>
+            <tr>
+                <td>Carla</td>
+                <td>9.0</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+  </div>
+
+
   <div id="modalSenha" class="hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
     <div class="bg-white p-4 rounded-lg shadow-md">
-      <h2 class="text-xl font-bold mb-2">Digite a senha de acesso</h2>
+      <h1 class="text-xl font-bold mb-2">Digite a senha de acesso</h1>
       <input type="password" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" rows="1" id="password" placeholder="Senha..."></input>
       <button id="closePassword" class="mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Fechar</button>
-      <button id="savePassword" class="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Salvar</button>
+      <button id="savePassword" class="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Entrar</button>
     </div>
-
   </div>
+
   <div id="modal" class="hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
     <div class="bg-white p-4 rounded-lg shadow-md">
       <h2 class="text-xl font-bold mb-2">Configurações</h2>
@@ -81,6 +108,7 @@
 
     openModalButton.addEventListener('click', () => {
       modalSenha.classList.remove('hidden');
+      document.getElementById("password").focus()
     });
 
     function verificaSenha(){
@@ -94,8 +122,8 @@
       }
 
       else{
-
         alert("Senha incorreta")
+        document.querySelector("#password").value = null
       }
 
     }
@@ -106,6 +134,7 @@
 
     closePassword.addEventListener('click', () => {
       modalSenha.classList.add('hidden');
+      document.querySelector("#password").value = null
     });
     closeModalButton.addEventListener('click', () => {
       modal.classList.add('hidden');
