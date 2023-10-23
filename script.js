@@ -1,11 +1,5 @@
-
+import {chaveAPI, chaveApp} from "./connect.js"
 import connectDb from "./db.js" //importando o retorno da função em connectDb.js
-
-var APIKey 
-var appKey
-var url
-
-
 
 
 var putEstoque = new Array
@@ -20,7 +14,7 @@ btnEnviaEstoque.addEventListener("click", consultaEstoque)
 async function consultaEstoque() {
 
   var headers = new Headers();
-  headers.append("Authorization", "chave_api", APIKey, " aplicacao", appKey,);
+  headers.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
 
   var requestOptions = {
     method: 'GET',
@@ -30,9 +24,10 @@ async function consultaEstoque() {
 
   const comparaProdutos = async () => {
     alert('clicou envia estoque')
-    var resposta = await fetch(url, requestOptions)
+    var resposta = await fetch("https://api.awsli.com.br/v1/produto", requestOptions)
       .then(response => response.json())
-      .catch(error => console.log('error', error))
+      .catch(error =>  console.log('error', error))
+      console.log(resposta)
 
     var inovaBarcodes = new Array
     for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
@@ -70,6 +65,52 @@ async function consultaEstoque() {
     }
 
     produtosParaEnviar = produtos
+
+    document.querySelector("#quantidadeEnvioProdutos").innerHTML = produtos.length + document.querySelector("#quantidadeEnvioProdutos").textContent ;
+
+    function addRow() {
+
+      let table = document.getElementById("tabelaEnvio");
+      let row = table.insertRow(-1);
+      let i = 2
+      let c1 = row.insertCell(0);
+      let c2 = row.insertCell(1);
+      let c3 = row.insertCell(2);
+      let c4 = row.insertCell(3);
+
+      table.setAttribute("class", "bg-white border-b dark:bg-gray-900 dark:border-gray-700"); 
+
+
+      c1.innerText = "Elon"
+      c1.setAttribute("class", "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"); 
+      c1.setAttribute("scope","row")
+
+      
+      c2.innerText = 45
+      c2.setAttribute("class", "px-6 py-4"); 
+
+
+      c3.innerText = "Houston"
+      c3.setAttribute("class", "px-6 py-4");
+
+
+      c4.innerText = "2342"
+      c4.setAttribute("class", "px-6 py-4");
+
+
+      if (i % 2 === 0){
+          table.setAttribute("class", "bg-white border-b dark:bg-gray-900 dark:border-gray-700"); 
+      } 
+      else{
+          table.setAttribute("class", "border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700"); 
+      }
+
+  }
+  // for (let i = 0; i < produtos.length; i = i + 1) {
+     // addRow(i)
+   //}
+   addRow()
+
 
     // este looping monta o json para ser enviado 
 
@@ -372,6 +413,8 @@ for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
   }
 
 }
+
+
 
 //await cadastraProduto()
 

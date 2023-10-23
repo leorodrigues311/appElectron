@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="./script.js" type="module"></script>
+  <script src="./frontPanel.js" type="module"></script>
+  
   
   
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -13,14 +15,20 @@
   <title>Loja integrada</title>
 </head>
 <body>
-  <div class="flex justify-center items-top">
-    <p class="font-mono text-2xl font-bold text-blue-600">Painel de integração</p>
-  </div>
-  <div class="flex justify-center items-top">
-    <p class="font-mono text-2xl font-bold text-blue-600">Loja integrada</p>
-  </div>
+
   
-  <div class="flex justify-center items-center h-screen">
+  <div class="flex justify-center items-center h-screen flex-col">
+
+
+
+    <div class="flex justify-center items-top">
+      <p class="font-mono text-2xl font-bold text-blue-600">Painel de integração</p>
+    </div>
+    <div class="flex justify-center items-top">
+      <p class="font-mono text-2xl font-bold text-blue-600">Loja integrada</p>
+    </div>
+
+
     <div class="border p-4 rounded-lg shadow-md">
       <button id = "btnEnviaEstoque" class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2">Enviar Estoque</button>
       <button onlcick="cadastraProduto()" class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2">Cadastrar produtos novos</button>
@@ -29,29 +37,87 @@
   </div>
 
 
-  <div id="modalEnvioEstoque" class=" fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
-    <div class="bg-white p-12 rounded-lg shadow-md">
-      <h1 class="text-xl font-bold mb-2">Itens encontrados para ajustar estoque</h1>
-      <table>
-        <thead>
-            <tr>
-                <th>Codigo de Barras</th>
-                <th>Nome</th>
-                <th>Estoque Inova</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>78945651</td>
-                <td>Teste</td>
-                <td>25</td>
-            </tr>
-            <tr>
-                <td>Carla</td>
-                <td>9.0</td>
-            </tr>
-        </tbody>
-    </table>
+  <div id="modalEnvioEstoque" class=" fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 overflow-auto">
+    <div class="bg-white p-8 rounded-lg shadow-md">
+      <h1 id="quantidadeEnvioProdutos"class="text-4xl font-bold mb-2 flex justify-center m-8 p-8 ">Itens encontrados para ajustar estoque</h1>
+      <div class="relative shadow-md sm:rounded-lg">
+        <table id= tabelaEnvio class="w-full text-md text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-sm text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Produto
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Código de Barra
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Categoria
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Estoque Inova
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tabelaProdutosEnvio" >
+                <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Apple MacBook Pro 17 pogueladas e tudo mais"
+                    </th>
+                    <td class="px-6 py-4">
+                        7897897897891254
+                    </td>
+                    <td class="px-6 py-4">
+                        Acessorios
+                    </td>
+                    <td class="px-6 py-4">
+                        $2999
+                    </td>
+                </tr>
+                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Microsoft Surface Pro
+                    </th>
+                    <td class="px-6 py-4">
+                        White
+                    </td>
+                    <td class="px-6 py-4">
+                        Laptop PC
+                    </td>
+                    <td class="px-6 py-4">
+                        $1999
+                    </td>
+                </tr>
+                <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Magic Mouse 2
+                    </th>
+                    <td class="px-6 py-4">
+                        Black
+                    </td>
+                    <td class="px-6 py-4">
+                        Accessories
+                    </td>
+                    <td class="px-6 py-4">
+                        $99
+                    </td>
+                </tr>
+                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Google Pixel Phone
+                    </th>
+                    <td class="px-6 py-4">
+                        Gray
+                    </td>
+                    <td class="px-6 py-4">
+                        Phone
+                    </td>
+                    <td class="px-6 py-4">
+                        $799
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     </div>
   </div>
 
@@ -97,53 +163,5 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-
-  <script>
-    var password = "inova@123"
-    const openModalButton = document.getElementById('openModalButton');
-    const closeModalButton = document.getElementById('closeModalButton');
-    const savePassword = document.getElementById('savePassword');
-    const closePassword = document.getElementById('closePassword');
-    const modal = document.getElementById('modal');
-
-    openModalButton.addEventListener('click', () => {
-      modalSenha.classList.remove('hidden');
-      document.getElementById("password").focus()
-    });
-
-    function verificaSenha(){
-
-      var senhaDigitada = document.querySelector("#password").value
-      if(password == senhaDigitada) {
-
-        modalSenha.classList.add('hidden');
-        modal.classList.remove('hidden');
-        document.querySelector("#password").value = null
-      }
-
-      else{
-        alert("Senha incorreta")
-        document.querySelector("#password").value = null
-      }
-
-    }
-
-    savePassword.addEventListener('click', () => {
-      verificaSenha()
-    });
-
-    closePassword.addEventListener('click', () => {
-      modalSenha.classList.add('hidden');
-      document.querySelector("#password").value = null
-    });
-    closeModalButton.addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-
-    saveConfigButton.addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-    
-  </script>
 </body>
 </html>
