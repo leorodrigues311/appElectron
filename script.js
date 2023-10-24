@@ -70,43 +70,43 @@ async function consultaEstoque() {
 
     document.querySelector("#quantidadeEnvioProdutos").innerHTML = produtos.length + document.querySelector("#quantidadeEnvioProdutos").textContent ;
 
-    function addRow() {
+    function addRow(produtos) {
       console.log("entrou na add row")
-      var table = document.getElementById("tabelaEnvio");
+      var table = document.getElementById("tabelaProdutosEnvio");
       var row = table.insertRow(-1);
       var c1 = row.insertCell(0);
       var c2 = row.insertCell(1);
       var c3 = row.insertCell(2);
       var c4 = row.insertCell(3);
 
-      console.log(i)
-      if (i % 2 === 0){
-          table.setAttribute("class", "border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700"); 
-      } 
-      else{
-          table.setAttribute("class", "bg-white border-b dark:bg-gray-900 dark:border-gray-700");  
+      if (i % 2!==0){
+        table = table.getElementsByTagName("tr")[i]
+        table.setAttribute("class", "border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700"); 
+      } else{
+        table = table.getElementsByTagName("tr")[i]
+        table.setAttribute("class", "bg-white border-b dark:bg-gray-900 dark:border-gray-700"); 
+
       }
-      console.log(produtos.descricao)
-      c1.innerText = produtos.descricao
+
+      c1.innerText = produtos[i].descricao
       c1.setAttribute("class", "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"); 
       c1.setAttribute("scope","row")
 
       
-      c2.innerText = produtos.codigobarra
+      c2.innerText = produtos[i].codigobarra
       c2.setAttribute("class", "px-6 py-4"); 
 
 
-      c3.innerText = produtos.categoria
+      c3.innerText = produtos[i].categoria
       c3.setAttribute("class", "px-6 py-4");
 
 
-      c4.innerText = produtos.estoque
+      c4.innerText = produtos[i].estoque
       c4.setAttribute("class", "px-6 py-4");
-
 
   }
    for (var i = 0; i < produtos.length; i = i + 1) {
-      addRow(produtos[i])
+      addRow(produtos)
    }
 
     // este looping monta o json para ser enviado 
