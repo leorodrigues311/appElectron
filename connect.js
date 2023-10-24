@@ -3,7 +3,7 @@ const pg = require ("pg")
 
 var chaveAPI //'06738b02b56b29a661c8' Esta é a chave que criamos dentro do login de cada usuário da loja
 var chaveApp //'ed102c0b-ff23-4826-b296-cfd2c913b133' Esta é a chave de aplicação da Inova
-var database = 'inova'
+var database = '2'
 var portDatabase = 5432
 var baseUrl = 'https://api.awsli.com.br/v1/produto_estoque' // Essa é a URL de requisição do estoque
 

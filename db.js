@@ -52,7 +52,7 @@ async function connectDb(){
 
 
     cliente.connect()
-    let r = await cliente.query("select produtoid, produtodescricao, produtocodigobarra, produtoqtdestoque from produtos")
+    let r = await cliente.query("select produtoid, produtodescricao, produtocodigobarra, produtoqtdestoque, categoriacodigo from produtos left join categorias on categorias.categoriaid = produtos.produtocategoriaid")
     .then(results => {
         let resultado = results.rows
         resultado = JSON.parse(JSON.stringify(resultado))

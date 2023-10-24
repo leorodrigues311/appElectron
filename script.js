@@ -12,6 +12,7 @@ btnEnviaEstoque.addEventListener("click", consultaEstoque)
 
 
 async function consultaEstoque() {
+  console.log("table produtos:",tableProdutosSql)
 
   var headers = new Headers();
   headers.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
@@ -33,6 +34,7 @@ async function consultaEstoque() {
     for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
 
       inovaBarcodes.push(tableProdutosSql[i].produtocodigobarra)
+
     }
 
     // tratando a resposta da API que foi salva na variavel 'resposta'
@@ -42,17 +44,17 @@ async function consultaEstoque() {
 
     // este looping compara se os produtos que temos salvo na variável resposta são iguais aos produtos que temos dentro de nosso banco de dados (os produtos do banco de dados estão em tableProdutosSql)
     for (let i = 0; i < resposta['objects'].length; i = i + 1) {
-
-      let verify = resposta['objects'][i].produto.replace('/api/v1/produto/','')
+      console.log(inovaBarcodes)
+      let verify = resposta['objects'][i].sku
 
       var found = inovaBarcodes.includes(verify) // essa linha retorna true ou false para a variável found (ele checa se encontrou o produto dentro de inovaBarcodes)
 
       if (found == true) {
-
         let index = inovaBarcodes.indexOf(verify)
         produtos.push({
-          produto: tableProdutosSql[index].produtocodigobarra,
+          codigobarra: tableProdutosSql[index].produtocodigobarra,
           descricao:tableProdutosSql[index].produtodescricao,
+          categoria:tableProdutosSql[index].categoriacodigo,
           estoque: tableProdutosSql[index].produtoqtdestoque
         })
 
@@ -69,48 +71,43 @@ async function consultaEstoque() {
     document.querySelector("#quantidadeEnvioProdutos").innerHTML = produtos.length + document.querySelector("#quantidadeEnvioProdutos").textContent ;
 
     function addRow() {
+      console.log("entrou na add row")
+      var table = document.getElementById("tabelaEnvio");
+      var row = table.insertRow(-1);
+      var c1 = row.insertCell(0);
+      var c2 = row.insertCell(1);
+      var c3 = row.insertCell(2);
+      var c4 = row.insertCell(3);
 
-      let table = document.getElementById("tabelaEnvio");
-      let row = table.insertRow(-1);
-      let i = 2
-      let c1 = row.insertCell(0);
-      let c2 = row.insertCell(1);
-      let c3 = row.insertCell(2);
-      let c4 = row.insertCell(3);
-
-      table.setAttribute("class", "bg-white border-b dark:bg-gray-900 dark:border-gray-700"); 
-
-
-      c1.innerText = "Elon"
+      console.log(i)
+      if (i % 2 === 0){
+          table.setAttribute("class", "border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700"); 
+      } 
+      else{
+          table.setAttribute("class", "bg-white border-b dark:bg-gray-900 dark:border-gray-700");  
+      }
+      console.log(produtos.descricao)
+      c1.innerText = produtos.descricao
       c1.setAttribute("class", "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"); 
       c1.setAttribute("scope","row")
 
       
-      c2.innerText = 45
+      c2.innerText = produtos.codigobarra
       c2.setAttribute("class", "px-6 py-4"); 
 
 
-      c3.innerText = "Houston"
+      c3.innerText = produtos.categoria
       c3.setAttribute("class", "px-6 py-4");
 
 
-      c4.innerText = "2342"
+      c4.innerText = produtos.estoque
       c4.setAttribute("class", "px-6 py-4");
 
 
-      if (i % 2 === 0){
-          table.setAttribute("class", "bg-white border-b dark:bg-gray-900 dark:border-gray-700"); 
-      } 
-      else{
-          table.setAttribute("class", "border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700"); 
-      }
-
   }
-  // for (let i = 0; i < produtos.length; i = i + 1) {
-     // addRow(i)
-   //}
-   addRow()
-
+   for (var i = 0; i < produtos.length; i = i + 1) {
+      addRow(produtos[i])
+   }
 
     // este looping monta o json para ser enviado 
 
@@ -125,6 +122,7 @@ async function consultaEstoque() {
 
   await comparaProdutos()
 
+  modalEnvioEstoque.classList.remove('hidden');
 
 }
 
