@@ -10,6 +10,9 @@ var tableProdutosSql = await connectDb
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", consultaEstoque)
 
+const btnConfirmaEnvioEstoque  = document.getElementById('btnConfirmaEnvioEstoque');
+btnConfirmaEnvioEstoque.addEventListener("click", enviaEstoque)
+
 
 async function consultaEstoque() {
   console.log("table produtos:",tableProdutosSql)
@@ -55,7 +58,8 @@ async function consultaEstoque() {
           codigobarra: tableProdutosSql[index].produtocodigobarra,
           descricao:tableProdutosSql[index].produtodescricao,
           categoria:tableProdutosSql[index].categoriacodigo,
-          estoque: tableProdutosSql[index].produtoqtdestoque
+          estoque: tableProdutosSql[index].produtoqtdestoque,
+          idLojaIntegrada: resposta['objects'][index].id
         })
 
       }
@@ -64,13 +68,16 @@ async function consultaEstoque() {
         produtosNaoAdicionados.push(resposta['objects'][i].produto)
       }
 
-    }
+      
 
+    }
+    console.log("esses são os produtos---",produtos)
     produtosParaEnviar = produtos
 
     document.querySelector("#quantidadeEnvioProdutos").innerHTML = produtos.length + document.querySelector("#quantidadeEnvioProdutos").textContent ;
 
     function addRow(produtos) {
+      
       console.log("entrou na add row")
       let table = document.getElementById("tabelaProdutosEnvio");
       let row = table.insertRow(-1);
@@ -131,7 +138,7 @@ function enviaEstoque() {
 
   alert('clicou envia estoque')
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "chave_api", APIKey, " aplicacao", appKey,);
+  myHeaders.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
   myHeaders.append("Content-Type", "application/json");
 
   for (let i = 0; i < putEstoque.length; i = i + 1) {
@@ -142,8 +149,8 @@ function enviaEstoque() {
 
     envio = {
       "gerenciado": true,
-      "situacao_em_estoque": null,
-      "situacao_sem_estoque": null,
+      "situacao_em_estoque": (parseInt(putEstoque[i].estoque)),
+      "situacao_sem_estoque": 0,
       "quantidade": (parseInt(putEstoque[i].estoque))
     }
 
@@ -158,9 +165,9 @@ function enviaEstoque() {
       redirect: 'follow'
     };
 
-    //console.log(requestOptions)
+    console.log(putEstoque)
 
-    fetch("https://api.awsli.com.br/v1/produto_estoque/" + putEstoque[i].produto, requestOptions)
+    fetch("https://api.awsli.com.br/v1/produto_estoque/" + putEstoque[i].idLojaIntegrada, requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
