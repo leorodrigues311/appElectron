@@ -25,8 +25,10 @@ btnConfirmaEnvioEstoque.addEventListener("click", () => {
 const btnCancelaEnvioEstoque  = document.getElementById('btnCancelaEnvioEstoque');
 btnCancelaEnvioEstoque.addEventListener("click", async() => {
 
-  await limpaTabela()
+  limpaTabela()
   modalEnvioEstoque.classList.add('hidden')
+  produtos = new Array
+  document.querySelector("#quantidadeEnvioProdutos").innerHTML = ' Itens encontrados para ajustar estoque'
 
 })
 
