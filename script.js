@@ -19,6 +19,9 @@ const btnConfirmaEnvioEstoque  = document.getElementById('btnConfirmaEnvioEstoqu
 btnConfirmaEnvioEstoque.addEventListener("click", () => {
   enviaEstoque()
   alert("Estoque Enviado com sucesso")
+  limpaTabela()
+  produtos = new Array
+  document.querySelector("#quantidadeEnvioProdutos").innerHTML = ' Itens encontrados para ajustar estoque'
   modalEnvioEstoque.classList.add('hidden')
 }) 
 
@@ -140,7 +143,6 @@ function montaTabela(){
 
 function addRow(produtos, indexTable) {
       
-  console.log("entrou na add row")
   let table = document.getElementById("tabelaProdutosEnvio");
   let row = table.insertRow(-1);
   let c1 = row.insertCell(0);
