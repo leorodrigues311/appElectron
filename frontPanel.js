@@ -12,19 +12,6 @@ openModalButton.addEventListener('click', () => {
   document.getElementById("password").focus()
 });
 
-const btnCancelaEnvioEstoque  = document.getElementById('btnCancelaEnvioEstoque');
-btnCancelaEnvioEstoque.addEventListener("click", () => {
-  
-  modalEnvioEstoque.classList.add('hidden')
-
-  let tbody = document.getElementById("tabelaProdutosEnvio");
-  while (tbody.hasChildNodes()) {
-    tbody.removeChild(tbody.lastChild);
-  }
-
-});
-
-
 
 
 function verificaSenha(){
