@@ -59,7 +59,7 @@ async function consultaEstoque() {
           descricao:tableProdutosSql[index].produtodescricao,
           categoria:tableProdutosSql[index].categoriacodigo,
           estoque: tableProdutosSql[index].produtoqtdestoque,
-          idLojaIntegrada: resposta['objects'][index].id
+          idLojaIntegrada: resposta['objects'][i].id
         })
 
       }
@@ -149,8 +149,6 @@ function enviaEstoque() {
 
     envio = {
       "gerenciado": true,
-      "situacao_em_estoque": (parseInt(putEstoque[i].estoque)),
-      "situacao_sem_estoque": 0,
       "quantidade": (parseInt(putEstoque[i].estoque))
     }
 
