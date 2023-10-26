@@ -3,16 +3,19 @@ import connectDb from "./db.js" //importando o retorno da função em connectDb.
 
 
 var putEstoque = new Array
-
+var modalCadastraProduto
 var tableProdutosSql = await connectDb
 var produtosNaoAdicionados = new Array //aqui ficam os produtos que não foram encontrados
 var produtos = new Array// aqui ficam os produtos que são encontrados no banco de dados depois de comparados com a requisição
 
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", async() => {
+  modalCadastraProduto = false
   await consultaEstoque()
   montaTabela()
   modalEnvioEstoque.classList.remove('hidden');
+  btnCancelaCadastroProduto.classList.remove('hidden');
+  btnConfirmaCadastroProduto.classList.remove('hidden');
 })   
 
 const btnConfirmaEnvioEstoque  = document.getElementById('btnConfirmaEnvioEstoque');
@@ -23,6 +26,9 @@ btnConfirmaEnvioEstoque.addEventListener("click", () => {
   produtos = new Array
   document.querySelector("#quantidadeEnvioProdutos").innerHTML = ' Itens encontrados para ajustar estoque'
   modalEnvioEstoque.classList.add('hidden')
+  btnCancelaEnvioEstoque.classList.add('hidden');
+  btnConfirmaEnvioEstoque.classList.add('hidden');
+
 }) 
 
 const btnCancelaEnvioEstoque  = document.getElementById('btnCancelaEnvioEstoque');
@@ -33,11 +39,55 @@ btnCancelaEnvioEstoque.addEventListener("click", async() => {
   produtos = new Array
   document.querySelector("#quantidadeEnvioProdutos").innerHTML = ' Itens encontrados para ajustar estoque'
 
+  btnCancelaEnvioEstoque.classList.add('hidden');
+  btnConfirmaEnvioEstoque.classList.add('hidden');
+
 })
 
 
+
+
+
+const btnConfirmaCadastroProduto  = document.getElementById('btnConfirmaCadastroProduto');
+btnConfirmaCadastroProduto.addEventListener("click", () => {
+  cadastraProduto()
+  alert("Produtos Cadastrados com Sucesso")
+  limpaTabela()
+  produtosNaoAdicionados = new Array
+  document.querySelector("#quantidadeEnvioProdutos").innerHTML = ' Itens encontrados para ajustar estoque'
+  modalEnvioEstoque.classList.add('hidden')
+  btnCancelaCadastroProduto.classList.add('hidden');
+  btnConfirmaCadastroProduto.classList.add('hidden');
+}) 
+
+const btnCancelaCadastroProduto  = document.getElementById('btnCancelaCadastroProduto');
+btnCancelaCadastroProduto.addEventListener("click", () => {
+
+  limpaTabela()
+  modalEnvioEstoque.classList.add('hidden')
+  produtos = new Array
+  produtosNaoAdicionados = new Array
+  document.querySelector("#quantidadeEnvioProdutos").innerHTML = ' Itens encontrados para ajustar estoque'
+
+  btnCancelaCadastroProduto.classList.add('hidden');
+  btnConfirmaCadastroProduto.classList.add('hidden');
+
+})
+
+
+
+
 const btnCadastraProduto = document.getElementById('btnCadastraProduto');
-btnCadastraProduto.addEventListener("click", cadastraProduto)
+btnCadastraProduto.addEventListener("click", async () => {
+
+  modalCadastraProduto = true
+  await consultaEstoque()
+  montaTabela()
+  modalEnvioEstoque.classList.remove('hidden');
+  btnCancelaEnvioEstoque.classList.remove('hidden');
+  btnConfirmaEnvioEstoque.classList.remove('hidden');
+
+})
 
 
 async function consultaEstoque() {
@@ -51,14 +101,14 @@ async function consultaEstoque() {
     redirect: 'follow'
   };
 
-  await comparaProdutos(requestOptions)
+  await comparaProdutos(requestOptions, modalCadastraProduto)
 
 
 }
 
 
 
-const comparaProdutos = async (requestOptions) => {
+const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
 
   var resposta = await fetch("https://api.awsli.com.br/v1/produto", requestOptions)
     .then(response => response.json())
@@ -80,8 +130,10 @@ const comparaProdutos = async (requestOptions) => {
     let verify = resposta['objects'][i].sku
     var found = inovaBarcodes.includes(verify) // essa linha retorna true ou false para a variável found (ele checa se encontrou o produto dentro de inovaBarcodes)
 
+    let index = inovaBarcodes.indexOf(verify)
+    
     if (found == true) {
-      let index = inovaBarcodes.indexOf(verify)
+
       produtos.push({
         codigobarra: tableProdutosSql[index].produtocodigobarra,
         descricao:tableProdutosSql[index].produtodescricao,
@@ -103,9 +155,13 @@ const comparaProdutos = async (requestOptions) => {
     }
 
   }
-
-  document.querySelector("#quantidadeEnvioProdutos").innerHTML = produtos.length + document.querySelector("#quantidadeEnvioProdutos").textContent ;
-
+  console.log(modalCadastraProduto)
+  if (modalCadastraProduto==false) {
+    document.querySelector("#quantidadeEnvioProdutos").innerHTML = produtos.length +  " Itens encontrados para ajustar estoque";
+  } 
+  else if (modalCadastraProduto==true){
+    document.querySelector("#quantidadeEnvioProdutos").innerHTML = produtosNaoAdicionados.length +  " Itens para cadastrar no Loja Integrada";
+  }
 
   // este looping monta o json para ser enviado 
   let envioAjusteEstoque = new Array
