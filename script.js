@@ -12,7 +12,10 @@ const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", async() => {
   modalCadastraProduto = false
   await consultaEstoque()
-  montaTabela(produtos, modalCadastraProduto)
+  montaTabela()
+  modalEnvioEstoque.classList.remove('hidden');
+  btnCancelaCadastroProduto.classList.remove('hidden');
+  btnConfirmaCadastroProduto.classList.remove('hidden');
 })   
 
 const btnConfirmaEnvioEstoque  = document.getElementById('btnConfirmaEnvioEstoque');
@@ -42,6 +45,9 @@ btnCancelaEnvioEstoque.addEventListener("click", async() => {
 })
 
 
+
+
+
 const btnConfirmaCadastroProduto  = document.getElementById('btnConfirmaCadastroProduto');
 btnConfirmaCadastroProduto.addEventListener("click", () => {
   cadastraProduto()
@@ -69,12 +75,18 @@ btnCancelaCadastroProduto.addEventListener("click", () => {
 })
 
 
+
+
 const btnCadastraProduto = document.getElementById('btnCadastraProduto');
 btnCadastraProduto.addEventListener("click", async () => {
 
   modalCadastraProduto = true
   await consultaEstoque()
   montaTabela()
+  modalEnvioEstoque.classList.remove('hidden');
+  btnCancelaEnvioEstoque.classList.remove('hidden');
+  btnConfirmaEnvioEstoque.classList.remove('hidden');
+
 })
 
 
@@ -96,21 +108,25 @@ async function consultaEstoque() {
 
 
 
-async function comparaProdutos (requestOptions, modalCadastraProduto){
+const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
 
   var resposta = await fetch("https://api.awsli.com.br/v1/produto", requestOptions)
     .then(response => response.json())
     .catch(error =>  console.log('error', error))
 
-
   var inovaBarcodes = new Array
   for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
 
     inovaBarcodes.push(tableProdutosSql[i].produtocodigobarra)
+
   }
 
-  console.log(resposta)
-  console.log(inovaBarcodes)
+  var lojaIntegradaBarcodes = new Array
+  for (let i = 0; i < resposta['objects'].length; i = i + 1) {
+
+    lojaIntegradaBarcodes.push(resposta['objects'][i].sku)
+
+  }
 
   // tratando a resposta da API que foi salva na variavel 'resposta'
 
@@ -119,8 +135,8 @@ async function comparaProdutos (requestOptions, modalCadastraProduto){
   for (let i = 0; i < resposta['objects'].length; i = i + 1) {
 
     let verify = resposta['objects'][i].sku
-    var found = inovaBarcodes.includes(verify) // essa linha retorna true ou false para a variável found (ele checa se encontrou o produto dentro de inovaBarcodes)
-    console.log(found)
+    let found = inovaBarcodes.includes(verify) // essa linha retorna true ou false para a variável found (ele checa se encontrou o produto dentro de inovaBarcodes)
+
     let index = inovaBarcodes.indexOf(verify)
     
     if (found == true) {
@@ -132,24 +148,31 @@ async function comparaProdutos (requestOptions, modalCadastraProduto){
         estoque: tableProdutosSql[index].produtoqtdestoque,
         idLojaIntegrada: resposta['objects'][i].id
       })
-      console.log(produtos.length)
 
     }
 
-    else if (found == false) {
+  
+  }
+
+  for (let i = 0; i < inovaBarcodes.length; i = i + 1) {
+
+    let verify = inovaBarcodes[i]
+    let found = lojaIntegradaBarcodes.includes(verify) // essa linha retorna true ou false para a variável found (ele checa se encontrou o produto dentro de inovaBarcodes)
+
+    if (found == false) {
 
       produtosNaoAdicionados.push({
-        codigobarra: tableProdutosSql[index].produtocodigobarra,
-        descricao:tableProdutosSql[index].produtodescricao,
-        categoria:tableProdutosSql[index].categoriacodigo,
-        estoque: tableProdutosSql[index].produtoqtdestoque,
-        
+        codigobarra: tableProdutosSql[i].produtocodigobarra,
+        descricao:tableProdutosSql[i].produtodescricao,
+        categoria:tableProdutosSql[i].categoriacodigo,
+        estoque: tableProdutosSql[i].produtoqtdestoque,
       })
 
     }
-
+ 
   }
-  console.log(modalCadastraProduto)
+
+
   if (modalCadastraProduto==false) {
     document.querySelector("#quantidadeEnvioProdutos").innerHTML = produtos.length +  " Itens encontrados para ajustar estoque";
   } 
@@ -164,6 +187,8 @@ async function comparaProdutos (requestOptions, modalCadastraProduto){
   }
 
   putEstoque = envioAjusteEstoque
+
+  console.log(produtosNaoAdicionados)
 
 }
 
@@ -182,41 +207,16 @@ async function limpaTabela(){
 
 
 
-function montaTabela(produtos, modalCadastraProduto){
+function montaTabela(){
 
-  if (modalCadastraProduto = false){
-
-    for (var indexTable = 0; indexTable < produtos.length; indexTable = indexTable + 1) {
-      addRow(produtos, produtosNaoAdicionados, indexTable, modalCadastraProduto)
-    }
-
-    modalEnvioEstoque.classList.remove('hidden');
-    btnCancelaEnvioEstoque.classList.remove('hidden');
-    btnConfirmaEnvioEstoque.classList.remove('hidden');
-
-  }
-
-  else if (modalCadastraProduto = true) {
-
-    for (var indexTable = 0; indexTable < produtosNaoAdicionados.length; indexTable = indexTable + 1) {
-      addRow(produtos, produtosNaoAdicionados, indexTable, modalCadastraProduto)
-    }
-
-    modalEnvioEstoque.classList.remove('hidden');
-    btnCancelaEnvioEstoque.classList.remove('hidden');
-    btnConfirmaEnvioEstoque.classList.remove('hidden');
-  }
-
-  else {
-    alert("Não foram encontrados produtos iguais para ajustar o estoque")
+  for (var indexTable = 0; indexTable < produtos.length; indexTable = indexTable + 1) {
+     addRow(produtos, indexTable)
   }
 
 }
 
 
-
-
-function addRow(produtos, produtosNaoAdicionados, indexTable, modalCadastraProduto) {
+function addRow(produtos, indexTable) {
       
   let table = document.getElementById("tabelaProdutosEnvio");
   let row = table.insertRow(-1);
@@ -234,27 +234,27 @@ function addRow(produtos, produtosNaoAdicionados, indexTable, modalCadastraProdu
 
   }
 
-  if (modalCadastraProduto = false){
-    c1.innerText = produtos[indexTable].descricao
-    c2.innerText = produtos[indexTable].codigobarra
-    c3.innerText = produtos[indexTable].categoria
-    c4.innerText = produtos[indexTable].estoque
-  } 
-  
-  else if (modalCadastraProduto = true){
-    c1.innerText = produtosNaoAdicionados[indexTable].descricao
-    c2.innerText = produtosNaoAdicionados[indexTable].codigobarra
-    c3.innerText = produtosNaoAdicionados[indexTable].categoria
-    c4.innerText = produtosNaoAdicionados[indexTable].estoque
-
-  }
+  c1.innerText = produtos[indexTable].descricao
   c1.setAttribute("class", "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"); 
   c1.setAttribute("scope","row")
+
+  
+  c2.innerText = produtos[indexTable].codigobarra
   c2.setAttribute("class", "px-6 py-4"); 
+
+
+  c3.innerText = produtos[indexTable].categoria
   c3.setAttribute("class", "px-6 py-4");
+
+
+  c4.innerText = produtos[indexTable].estoque
   c4.setAttribute("class", "px-6 py-4");
 
 }
+
+
+
+
 
 
 
@@ -357,4 +357,3 @@ async function cadastraProduto(){
 
 
 //await cadastraProduto()
-
