@@ -12,7 +12,7 @@ const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", async() => {
   modalCadastraProduto = false
   await consultaEstoque()
-  montaTabela()
+  montaTabela(produtos, modalCadastraProduto)
 })   
 
 const btnConfirmaEnvioEstoque  = document.getElementById('btnConfirmaEnvioEstoque');
@@ -96,37 +96,32 @@ async function consultaEstoque() {
 
 
 
-const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
+async function comparaProdutos (requestOptions, modalCadastraProduto){
 
   var resposta = await fetch("https://api.awsli.com.br/v1/produto", requestOptions)
     .then(response => response.json())
     .catch(error =>  console.log('error', error))
 
+
   var inovaBarcodes = new Array
-  var lojaIntegradaBarcodes = new Array
   for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
 
     inovaBarcodes.push(tableProdutosSql[i].produtocodigobarra)
-
-  }
-
-  for (let i = 0; i < resposta['objects'].length; i = i + 1) {
-
-    lojaIntegradaBarcodes.push(resposta['objects'][i].sku)
   }
 
   console.log(resposta)
-  console.log(lojaIntegradaBarcodes)
+  console.log(inovaBarcodes)
 
   // tratando a resposta da API que foi salva na variavel 'resposta'
 
 
   // este looping compara se os produtos que temos salvo na variável resposta são iguais aos produtos que temos dentro de nosso banco de dados (os produtos do banco de dados estão em tableProdutosSql)
-  for (let i = 0; i < inovaBarcodes.length; i = i + 1) {
+  for (let i = 0; i < resposta['objects'].length; i = i + 1) {
 
-    let verify = inovaBarcodes[i]
-    var found = lojaIntegradaBarcodes.includes(verify) // essa linha retorna true ou false para a variável found (ele checa se encontrou o produto dentro de inovaBarcodes)
-    let index = lojaIntegradaBarcodes.indexOf(verify)
+    let verify = resposta['objects'][i].sku
+    var found = inovaBarcodes.includes(verify) // essa linha retorna true ou false para a variável found (ele checa se encontrou o produto dentro de inovaBarcodes)
+    console.log(found)
+    let index = inovaBarcodes.indexOf(verify)
     
     if (found == true) {
 
@@ -137,13 +132,12 @@ const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
         estoque: tableProdutosSql[index].produtoqtdestoque,
         idLojaIntegrada: resposta['objects'][i].id
       })
+      console.log(produtos.length)
 
     }
 
     else if (found == false) {
 
-      found = inovaBarcodes.includes(verify)
-      index = inovaBarcodes.indexOf(verify)
       produtosNaoAdicionados.push({
         codigobarra: tableProdutosSql[index].produtocodigobarra,
         descricao:tableProdutosSql[index].produtodescricao,
@@ -188,9 +182,9 @@ async function limpaTabela(){
 
 
 
-function montaTabela(){
+function montaTabela(produtos, modalCadastraProduto){
 
-  if (modalCadastraProduto = false && produtos.lenght > 0){
+  if (modalCadastraProduto = false){
 
     for (var indexTable = 0; indexTable < produtos.length; indexTable = indexTable + 1) {
       addRow(produtos, produtosNaoAdicionados, indexTable, modalCadastraProduto)
@@ -202,7 +196,7 @@ function montaTabela(){
 
   }
 
-  else if (modalCadastraProduto = true && produtosNaoAdicionados.lenght > 0) {
+  else if (modalCadastraProduto = true) {
 
     for (var indexTable = 0; indexTable < produtosNaoAdicionados.length; indexTable = indexTable + 1) {
       addRow(produtos, produtosNaoAdicionados, indexTable, modalCadastraProduto)
