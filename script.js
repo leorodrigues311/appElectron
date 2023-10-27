@@ -8,15 +8,17 @@ var tableProdutosSql = await connectDb
 var produtosNaoAdicionados = new Array //aqui ficam os produtos que não foram encontrados
 var produtos = new Array// aqui ficam os produtos que são encontrados no banco de dados depois de comparados com a requisição
 
+
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", async() => {
   modalCadastraProduto = false
   await consultaEstoque()
-  montaTabela()
+  montaTabela(produtos,modalCadastraProduto)
   modalEnvioEstoque.classList.remove('hidden');
-  btnCancelaCadastroProduto.classList.remove('hidden');
-  btnConfirmaCadastroProduto.classList.remove('hidden');
+  btnCancelaEnvioEstoque.classList.remove('hidden');
+  btnConfirmaEnvioEstoque.classList.remove('hidden');
 })   
+
 
 const btnConfirmaEnvioEstoque  = document.getElementById('btnConfirmaEnvioEstoque');
 btnConfirmaEnvioEstoque.addEventListener("click", () => {
@@ -30,6 +32,7 @@ btnConfirmaEnvioEstoque.addEventListener("click", () => {
   btnConfirmaEnvioEstoque.classList.add('hidden');
 
 }) 
+
 
 const btnCancelaEnvioEstoque  = document.getElementById('btnCancelaEnvioEstoque');
 btnCancelaEnvioEstoque.addEventListener("click", async() => {
@@ -45,9 +48,6 @@ btnCancelaEnvioEstoque.addEventListener("click", async() => {
 })
 
 
-
-
-
 const btnConfirmaCadastroProduto  = document.getElementById('btnConfirmaCadastroProduto');
 btnConfirmaCadastroProduto.addEventListener("click", () => {
   cadastraProduto()
@@ -59,6 +59,7 @@ btnConfirmaCadastroProduto.addEventListener("click", () => {
   btnCancelaCadastroProduto.classList.add('hidden');
   btnConfirmaCadastroProduto.classList.add('hidden');
 }) 
+
 
 const btnCancelaCadastroProduto  = document.getElementById('btnCancelaCadastroProduto');
 btnCancelaCadastroProduto.addEventListener("click", () => {
@@ -75,17 +76,15 @@ btnCancelaCadastroProduto.addEventListener("click", () => {
 })
 
 
-
-
 const btnCadastraProduto = document.getElementById('btnCadastraProduto');
 btnCadastraProduto.addEventListener("click", async () => {
 
   modalCadastraProduto = true
   await consultaEstoque()
-  montaTabela()
+  montaTabela(produtos,modalCadastraProduto)
   modalEnvioEstoque.classList.remove('hidden');
-  btnCancelaEnvioEstoque.classList.remove('hidden');
-  btnConfirmaEnvioEstoque.classList.remove('hidden');
+  btnCancelaCadastroProduto.classList.remove('hidden');
+  btnConfirmaCadastroProduto.classList.remove('hidden');
 
 })
 
@@ -103,9 +102,7 @@ async function consultaEstoque() {
 
   await comparaProdutos(requestOptions, modalCadastraProduto)
 
-
 }
-
 
 
 const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
@@ -154,6 +151,8 @@ const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
   
   }
 
+  produtosNaoAdicionados = new Array
+  
   for (let i = 0; i < inovaBarcodes.length; i = i + 1) {
 
     let verify = inovaBarcodes[i]
@@ -189,9 +188,7 @@ const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
   putEstoque = envioAjusteEstoque
 
   console.log(produtosNaoAdicionados)
-
 }
-
 
 
 async function limpaTabela(){
@@ -207,10 +204,11 @@ async function limpaTabela(){
 
 
 
-function montaTabela(){
-
-  for (var indexTable = 0; indexTable < produtos.length; indexTable = indexTable + 1) {
-     addRow(produtos, indexTable)
+function montaTabela(produtos, modalCadastraProduto){
+  if(produtos.lenght > 0 && modalCadastraProduto == false){
+    for (var indexTable = 0; indexTable < produtos.length; indexTable = indexTable + 1) {
+      addRow(produtos, indexTable)
+    }
   }
 
 }
