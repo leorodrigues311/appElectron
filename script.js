@@ -14,7 +14,7 @@ var produtos = new Array// aqui ficam os produtos que são encontrados no banco 
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", async() => {
   modalCadastraProduto = false
-  await consultaEstoque()
+  await consultaEstoque(chaveAPI, chaveApp)
   montaTabela(produtos,modalCadastraProduto)
   modalEnvioEstoque.classList.remove('hidden');
   btnCancelaEnvioEstoque.classList.remove('hidden');
@@ -52,7 +52,7 @@ btnCancelaEnvioEstoque.addEventListener("click", async() => {
 
 const btnConfirmaCadastroProduto  = document.getElementById('btnConfirmaCadastroProduto');
 btnConfirmaCadastroProduto.addEventListener("click", () => {
-  cadastraProduto()
+  cadastraProduto(produtosNaoAdicionados)
   alert("Produtos Cadastrados com Sucesso")
   limpaTabela()
   produtosNaoAdicionados = new Array
@@ -82,7 +82,7 @@ const btnCadastraProduto = document.getElementById('btnCadastraProduto');
 btnCadastraProduto.addEventListener("click", async () => {
 
   modalCadastraProduto = true
-  await consultaEstoque()
+  await consultaEstoque(chaveAPI, chaveApp)
   montaTabela(produtos,modalCadastraProduto)
   modalEnvioEstoque.classList.remove('hidden');
   btnCancelaCadastroProduto.classList.remove('hidden');
@@ -94,7 +94,7 @@ btnCadastraProduto.addEventListener("click", async () => {
 async function consultaEstoque(chaveAPI, chaveApp) {
 
   var headers = new Headers();
-  headers.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
+  headers.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
 
   var requestOptions = {
     method: 'GET',
@@ -275,7 +275,7 @@ function enviaEstoque() {
 
   alert('clicou envia estoque')
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
+  myHeaders.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
   myHeaders.append("Content-Type", "application/json");
 
   for (let i = 0; i < putEstoque.length; i = i + 1) {
@@ -310,12 +310,12 @@ function enviaEstoque() {
 
 
 
-async function cadastraProduto(){
+async function cadastraProduto(produtosNaoAdicionados){
   
-  consultaEstoque()
+  consultaEstoque(chaveAPI, chaveApp)
 
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
+  myHeaders.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
   myHeaders.append("Content-Type", "application/json");
 
 
