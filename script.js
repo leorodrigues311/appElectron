@@ -210,13 +210,13 @@ function montaTabela(produtos, modalCadastraProduto){
 
   if (Object.keys(produtos).length > 0 && modalCadastraProduto == false){
     for (var indexTable = 0; indexTable < produtos.length; indexTable = indexTable + 1) {
-      addRow(produtos, indexTable)
+      addRow(produtos, indexTable, produtosNaoAdicionados, modalCadastraProduto)
       console.log("entrou")
     }
   }
   else if(Object.keys(produtosNaoAdicionados).length > 0 && modalCadastraProduto == true){
     for (var indexTable = 0; indexTable < produtosNaoAdicionados.length; indexTable = indexTable + 1) {
-      addRow(produtos, indexTable)
+      addRow(produtos, indexTable, produtosNaoAdicionados, modalCadastraProduto)
       console.log("entrou no outro")
     }
   }
@@ -224,8 +224,8 @@ function montaTabela(produtos, modalCadastraProduto){
 }
 
 
-function addRow(produtos, produtosNaoAdicionados ,indexTable, modalCadastraProduto) {
-      
+function addRow(produtos, indexTable, produtosNaoAdicionados, modalCadastraProduto) {
+
   let table = document.getElementById("tabelaProdutosEnvio");
   let row = table.insertRow(-1);
   let c1 = row.insertCell(0);
@@ -241,21 +241,26 @@ function addRow(produtos, produtosNaoAdicionados ,indexTable, modalCadastraProdu
     table.setAttribute("class", "bg-white border-b dark:bg-gray-900 dark:border-gray-700"); 
 
   }
+  if(modalCadastraProduto == false){
+    c1.innerText = produtos[indexTable].descricao
+    c2.innerText = produtos[indexTable].codigobarra
+    c3.innerText = produtos[indexTable].categoria
+    c4.innerText = produtos[indexTable].estoque
+  }
 
-  c1.innerText = produtos[indexTable].descricao
+  else if(modalCadastraProduto == true){
+    c1.innerText = produtosNaoAdicionados[indexTable].descricao
+    c2.innerText = produtosNaoAdicionados[indexTable].codigobarra
+    c3.innerText = produtosNaoAdicionados[indexTable].categoria
+    c4.innerText = produtosNaoAdicionados[indexTable].estoque
+
+  }
+
+
   c1.setAttribute("class", "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"); 
   c1.setAttribute("scope","row")
-
-  
-  c2.innerText = produtos[indexTable].codigobarra
   c2.setAttribute("class", "px-6 py-4"); 
-
-
-  c3.innerText = produtos[indexTable].categoria
   c3.setAttribute("class", "px-6 py-4");
-
-
-  c4.innerText = produtos[indexTable].estoque
   c4.setAttribute("class", "px-6 py-4");
 
 }
