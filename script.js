@@ -2,6 +2,8 @@ import {chaveAPI, chaveApp} from "./connect.js"
 import connectDb from "./db.js" //importando o retorno da função em connectDb.js
 
 
+
+
 var putEstoque = new Array
 var modalCadastraProduto
 var tableProdutosSql = await connectDb
@@ -89,7 +91,7 @@ btnCadastraProduto.addEventListener("click", async () => {
 })
 
 
-async function consultaEstoque() {
+async function consultaEstoque(chaveAPI, chaveApp) {
 
   var headers = new Headers();
   headers.append("Authorization", "chave_api 06738b02b56b29a661c8 aplicacao f97286a6-2d79-4327-9cc3-ee690af6a1b8");
@@ -150,7 +152,7 @@ const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
 
   
   }
-
+  console.log(produtos)
   produtosNaoAdicionados = new Array
   
   for (let i = 0; i < inovaBarcodes.length; i = i + 1) {
@@ -205,16 +207,24 @@ async function limpaTabela(){
 
 
 function montaTabela(produtos, modalCadastraProduto){
-  if(produtos.lenght > 0 && modalCadastraProduto == false){
+
+  if (Object.keys(produtos).length > 0 && modalCadastraProduto == false){
     for (var indexTable = 0; indexTable < produtos.length; indexTable = indexTable + 1) {
       addRow(produtos, indexTable)
+      console.log("entrou")
+    }
+  }
+  else if(Object.keys(produtosNaoAdicionados).length > 0 && modalCadastraProduto == true){
+    for (var indexTable = 0; indexTable < produtosNaoAdicionados.length; indexTable = indexTable + 1) {
+      addRow(produtos, indexTable)
+      console.log("entrou no outro")
     }
   }
 
 }
 
 
-function addRow(produtos, indexTable) {
+function addRow(produtos, produtosNaoAdicionados ,indexTable, modalCadastraProduto) {
       
   let table = document.getElementById("tabelaProdutosEnvio");
   let row = table.insertRow(-1);
