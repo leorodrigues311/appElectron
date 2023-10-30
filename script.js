@@ -24,7 +24,7 @@ btnEnviaEstoque.addEventListener("click", async() => {
 
 const btnConfirmaEnvioEstoque  = document.getElementById('btnConfirmaEnvioEstoque');
 btnConfirmaEnvioEstoque.addEventListener("click", () => {
-  enviaEstoque()
+  enviaEstoque(chaveAPI, chaveApp, putEstoque)
   alert("Estoque Enviado com sucesso")
   limpaTabela()
   produtos = new Array
@@ -52,7 +52,7 @@ btnCancelaEnvioEstoque.addEventListener("click", async() => {
 
 const btnConfirmaCadastroProduto  = document.getElementById('btnConfirmaCadastroProduto');
 btnConfirmaCadastroProduto.addEventListener("click", () => {
-  cadastraProduto(produtosNaoAdicionados)
+  cadastraProduto(produtosNaoAdicionados, chaveAPI, chaveApp)
   alert("Produtos Cadastrados com Sucesso")
   limpaTabela()
   produtosNaoAdicionados = new Array
@@ -271,7 +271,7 @@ function addRow(produtos, indexTable, produtosNaoAdicionados, modalCadastraProdu
 
 
 
-function enviaEstoque() {
+function enviaEstoque(chaveAPI, chaveApp, putEstoque) {
 
   alert('clicou envia estoque')
   var myHeaders = new Headers();
@@ -310,10 +310,11 @@ function enviaEstoque() {
 
 
 
-async function cadastraProduto(produtosNaoAdicionados){
+async function cadastraProduto(produtosNaoAdicionados, chaveAPI, chaveApp){
   
-  consultaEstoque(chaveAPI, chaveApp)
+  await consultaEstoque(chaveAPI, chaveApp)
 
+  console.log(chaveAPI, chaveApp)
   var myHeaders = new Headers();
   myHeaders.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
   myHeaders.append("Content-Type", "application/json");
@@ -324,15 +325,15 @@ async function cadastraProduto(produtosNaoAdicionados){
 
     var produtoEnvio = new Array
 
-    console.log(produtosNaoAdicionados[i].produtodescricao)
+    console.log(produtosNaoAdicionados[i].descricao)
 
 
     produtoEnvio = {
       "id_externo":null,
-      "sku": produtosNaoAdicionados[i].produtocodigobarra,
+      "sku": produtosNaoAdicionados[i].codigobarra,
       "mpn": null,
       "ncm": null,
-      "nome": produtosNaoAdicionados[i].produtodescricao,
+      "nome": produtosNaoAdicionados[i].descricao,
       "apelido": null,
       "descricao_completa": "<strong>Desctição HTML do produto</strong>",
       "ativo": true,
