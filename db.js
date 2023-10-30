@@ -24,7 +24,8 @@ async function criaTabela() {
         await cliente.query("CREATE TABLE configlojaintegrada (chaveid integer NOT NULL, bancoPorta character varying(255), bancoNome character varying(255), chaveapi character varying(255), chaveapp character varying(255), CONSTRAINT configlojaintegrada_pk PRIMARY KEY (chaveid)) WITH (OIDS=FALSE);")
         await cliente.query("INSERT INTO configlojaintegrada(chaveid) VALUES (1);")
 
-        await cliente.query("CREATE TABLE pedidoslojaintegrada (pedidomovimentoid integer NOT NULL, pedidoid integer, datasincronizacao timestamp without time zone, datapedido integer, pedidovalortotal integer, pedidostatus character varying(255), pedidosincronizado boolean);")
+        await cliente.query("CREATE TABLE pedidoslojaintegrada (pedidomovimentoid integer NOT NULL, pedidoid integer, datasincronizacao timestamp without time zone, datapedido integer, pedidovalortotal integer, pedidostatus character varying(255), pedidosincronizado boolean)")
+        await cliente.query("INSERT INTO pedidoslojaintegrada(pedidomovimentoid) VALUES (1);")
         this.alert("Tabela criada com sucesso")
 
     } catch(e) {

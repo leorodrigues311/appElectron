@@ -412,8 +412,10 @@ async function consultaPedidos(chaveAPI, chaveApp){
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 
-
         
+
+
+
         
 
      }
