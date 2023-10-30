@@ -9,6 +9,9 @@ var modalCadastraProduto
 var tableProdutosSql = await connectDb
 var produtosNaoAdicionados = new Array //aqui ficam os produtos que não foram encontrados
 var produtos = new Array// aqui ficam os produtos que são encontrados no banco de dados depois de comparados com a requisição
+var numeroUltimoPedido
+var respostaPedidos = new Array
+var respostaPedidoEspecifico = new Array
 
 
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
@@ -370,4 +373,51 @@ async function cadastraProduto(produtosNaoAdicionados, chaveAPI, chaveApp){
 
 
 
-//await cadastraProduto()
+async function consultaPedidos(chaveAPI, chaveApp){
+
+
+
+
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
+  
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+  
+  respostaPedidos = fetch("https://api.awsli.com.br/v1/pedido/search/?since_numero=135&situacao_id=8&pagamento_id=24&limit=15", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+
+    console.log(respostaPedidos)
+
+
+
+     for (let i = 0; i < respostaPedidos['objects'].length; i = i + 1) {
+
+        let pedidoNumero = respostaPedidos['objects'][i].numero
+
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+
+        
+        respostaPedidoEspecifico = fetch("https://api.awsli.com.br/v1/pedido/"+pedidoNumero+"", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+
+        
+        
+
+     }
+
+
+
+}
