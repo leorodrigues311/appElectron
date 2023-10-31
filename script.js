@@ -1,5 +1,5 @@
 import {chaveAPI, chaveApp} from "./connect.js"
-import connectDb from "./db.js" //importando o retorno da função em connectDb.js
+import connectDb, { armazenaPedidos } from "./db.js" //importando o retorno da função em connectDb.js
 
 
 
@@ -394,31 +394,36 @@ async function consultaPedidos(chaveAPI, chaveApp){
 
     console.log(respostaPedidos)
 
+}
 
 
-     for (let i = 0; i < respostaPedidos['objects'].length; i = i + 1) {
-
-        let pedidoNumero = respostaPedidos['objects'][i].numero
-
-        var requestOptions = {
-          method: 'GET',
-          headers: myHeaders,
-          redirect: 'follow'
-        };
-
-        
-        respostaPedidoEspecifico = fetch("https://api.awsli.com.br/v1/pedido/"+pedidoNumero+"", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-
-        
+async function comparaPedidos(respostaPedidos){
 
 
+  for (let i = 0; i < respostaPedidos['objects'].length; i = i + 1) {
 
-        
+    let pedidoNumero = respostaPedidos['objects'][i].numero
+    let consultaBanco = await consultaPedidos()
 
-     }
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    
+    respostaPedidoEspecifico = fetch("https://api.awsli.com.br/v1/pedido/"+pedidoNumero+"", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+
+
+    let verify = consultaBanco.includes(respostaPedidoEspecifico.numero)
+
+    if (verify == false)
+      armazenaPedidos(respostaPedidoEspecifico)
+
+ }
 
 
 
