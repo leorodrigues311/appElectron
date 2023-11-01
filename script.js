@@ -1,5 +1,5 @@
 import {chaveAPI, chaveApp} from "./connect.js"
-import connectDb, { armazenaPedidos } from "./db.js" //importando o retorno da função em connectDb.js
+import connectDb, {armazenaPedidos, consultaPedidosBanco} from "./db.js" //importando o retorno da função em connectDb.js
 
 
 
@@ -22,6 +22,7 @@ btnEnviaEstoque.addEventListener("click", async() => {
   modalEnvioEstoque.classList.remove('hidden');
   btnCancelaEnvioEstoque.classList.remove('hidden');
   btnConfirmaEnvioEstoque.classList.remove('hidden');
+  comparaPedidos(respostaPedidos)
 })   
 
 
@@ -377,7 +378,7 @@ async function consultaPedidos(chaveAPI, chaveApp){
 
 
 
-
+/*
   var myHeaders = new Headers();
   myHeaders.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
   
@@ -393,38 +394,252 @@ async function consultaPedidos(chaveAPI, chaveApp){
     .catch(error => console.log('error', error));
 
     console.log(respostaPedidos)
+*/
 
+return respostaPedidos = {
+  "meta": {
+    "limit": 15,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total_count": 2
+  },
+  "objects": [
+    {
+      "cliente": "/api/v1/cliente/34220641",
+      "data_criacao": "2022-10-31T12:17:51.633657",
+      "data_expiracao": "2022-11-06T12:17:51.733114",
+      "data_modificacao": "2022-10-31T12:17:58.949670",
+      "id_anymarket": null,
+      "id_externo": null,
+      "numero": 164,
+      "peso_real": "0.170",
+      "resource_uri": "/api/v1/pedido/164",
+      "situacao": {
+        "aprovado": false,
+        "cancelado": true,
+        "codigo": "pedido_cancelado",
+        "final": true,
+        "id": 8,
+        "nome": "Pedido Cancelado",
+        "notificar_comprador": true,
+        "padrao": false,
+        "resource_uri": "/api/v1/situacao/8"
+      },
+      "utm_campaign": null,
+      "valor_desconto": "0.00",
+      "valor_envio": "21.38",
+      "valor_subtotal": "85.00",
+      "valor_total": "106.38"
+    },
+    {
+      "cliente": "/api/v1/cliente/34220641",
+      "data_criacao": "2022-10-31T12:28:05.704751",
+      "data_expiracao": "2022-11-06T12:28:05.782308",
+      "data_modificacao": "2022-10-31T12:28:12.653648",
+      "id_anymarket": null,
+      "id_externo": null,
+      "numero": 165,
+      "peso_real": "0.450",
+      "resource_uri": "/api/v1/pedido/165",
+      "situacao": {
+        "aprovado": false,
+        "cancelado": true,
+        "codigo": "pedido_cancelado",
+        "final": true,
+        "id": 8,
+        "nome": "Pedido Cancelado",
+        "notificar_comprador": true,
+        "padrao": false,
+        "resource_uri": "/api/v1/situacao/8"
+      },
+      "utm_campaign": null,
+      "valor_desconto": "0.00",
+      "valor_envio": "21.38",
+      "valor_subtotal": "11.10",
+      "valor_total": "32.48"
+    }
+  ]
+}
 }
 
 
-async function comparaPedidos(respostaPedidos){
+async function comparaPedidos(){
 
+  let pedidos = await consultaPedidos(chaveAPI, chaveApp)
 
-  for (let i = 0; i < respostaPedidos['objects'].length; i = i + 1) {
+  console.log(pedidos)
+  for (let i = 0; i < pedidos['objects'].length; i = i + 1) {
 
     let pedidoNumero = respostaPedidos['objects'][i].numero
-    let consultaBanco = await consultaPedidos()
+    let consultaBanco = await consultaPedidosBanco()
 
+    console.log('numero do pedido:', pedidoNumero)
+   /*
     var requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow'
     };
 
-    
+ 
     respostaPedidoEspecifico = fetch("https://api.awsli.com.br/v1/pedido/"+pedidoNumero+"", requestOptions)
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
+    */
 
 
-    let verify = consultaBanco.includes(respostaPedidoEspecifico.numero)
+    respostaPedidoEspecifico = {
+      "cliente": {
+        "cnpj": null,
+        "cpf": "14093771723",
+        "data_nascimento": null,
+        "email": "teste@lojateste.com.br",
+        "id": 34220641,
+        "nome": "CLiente Teste",
+        "razao_social": null,
+        "resource_uri": "/api/v1/cliente/34220641",
+        "sexo": "",
+        "telefone_celular": "21111111111",
+        "telefone_principal": null
+      },
+      "cliente_obs": null,
+      "cupom_desconto": null,
+      "data_criacao": "2022-10-31T12:28:05.704751",
+      "data_expiracao": "2022-11-06T12:28:05.782308",
+      "data_modificacao": "2022-10-31T12:28:12.653648",
+      "endereco_entrega": {
+        "bairro": "Bonsucesso",
+        "cep": "21041040",
+        "cidade": "Rio de Janeiro",
+        "cnpj": null,
+        "complemento": null,
+        "cpf": "14093771723",
+        "endereco": "Avenida Nova York",
+        "estado": "RJ",
+        "id": 51870053,
+        "ie": "isento",
+        "nome": "CLiente Teste",
+        "numero": "1",
+        "pais": "Brasil",
+        "razao_social": null,
+        "referencia": null,
+        "rg": null,
+        "tipo": "PF"
+      },
+      "envios": [
+        {
+          "data_criacao": "2022-10-31T12:28:05.722569",
+          "data_modificacao": "2022-10-31T12:28:05.722584",
+          "forma_envio": {
+            "code": "PAC",
+            "id": 141909,
+            "nome": "Enviali",
+            "tipo": "PAC "
+          },
+          "id": 69291055,
+          "objeto": null,
+          "prazo": 7,
+          "valor": "21.38"
+        }
+      ],
+      "id_anymarket": null,
+      "id_externo": null,
+      "itens": [
+        {
+          "altura": 2,
+          "disponibilidade": 0,
+          "id": 156487061,
+          "largura": 12,
+          "linha": 1,
+          "nome": "Casaco infantil",
+          "pedido": "/api/v1/pedido/165",
+          "peso": "0.450",
+          "preco_cheio": "12.0000",
+          "preco_custo": null,
+          "preco_promocional": "11.1000",
+          "preco_subtotal": "11.1000",
+          "preco_venda": "11.1000",
+          "produto": {
+            "id_externo": 88568855,
+            "resource_uri": "/api/v1/produto/88568855?id_externo=1"
+          },
+          "produto_pai": "/api/v1/produto/182904918",
+          "profundidade": 6,
+          "quantidade": "5.000",
+          "sku": 345,
+          "tipo": "atributo_opcao"
+        }
+      ],
+      "numero": 165,
+      "pagamentos": [
+        {
+          "authorization_code": null,
+          "banco": null,
+          "bandeira": "Mastercard",
+          "codigo_retorno_gateway": null,
+          "forma_pagamento": {
+            "codigo": "pagsegurov2",
+            "configuracoes": {
+              "ativo": true,
+              "disponivel": true
+            },
+            "id": 24,
+            "imagem": "https://cdn.awsli.com.br/production/static/painel/img/formas-de-pagamento/pagsegurov2-logo.png",
+            "nome": "PagSeguro V2",
+            "resource_uri": "/api/v1/pagamento/24"
+          },
+          "id": 69291176,
+          "identificador_id": null,
+          "mensagem_gateway": null,
+          "pagamento_tipo": "creditCard",
+          "parcelamento": {
+            "numero_parcelas": 1,
+            "valor_parcela": 32.48
+          },
+          "transacao_id": null,
+          "valor": "32.48",
+          "valor_pago": "32.48"
+        }
+      ],
+      "peso_real": "0.450",
+      "resource_uri": "/api/v1/pedido/165",
+      "situacao": {
+        "aprovado": false,
+        "cancelado": true,
+        "codigo": "pedido_cancelado",
+        "final": true,
+        "id": 8,
+        "nome": "Pedido Cancelado",
+        "notificar_comprador": true,
+        "padrao": false,
+        "resource_uri": "/api/v1/situacao/8"
+      },
+      "utm_campaign": null,
+      "valor_desconto": "0.00",
+      "valor_envio": "21.38",
+      "valor_subtotal": "11.10",
+      "valor_total": "32.48"
+    }
 
-    if (verify == false)
+
+    console.log(tableProdutosSql[i].produtocodigobarra)
+
+    //let verify = consultaBanco.includes(respostaPedidoEspecifico.numero)
+    let verify2 = Object.values(tableProdutosSql).includes(respostaPedidoEspecifico['itens'][i].sku)
+
+    let index = tableProdutosSql.indexOf(respostaPedidoEspecifico.numero)
+
+    if (verify == false && verify2 == true)
       armazenaPedidos(respostaPedidoEspecifico)
+      alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, index)
 
  }
 
 
 
+
 }
+
+export {respostaPedidoEspecifico}

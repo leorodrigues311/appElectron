@@ -71,7 +71,17 @@ async function connectDb(){
 }
 
 
-export async function consultaPedidos(){
+export async function consultaPedidosBanco(){
+
+
+    const Client = require ("pg").Client
+    const cliente = new pg.Client({
+        user: "postgres",
+        password: "inova@613188#",
+        host: "127.0.0.1",
+        port: portDatabase,
+        database: database
+        })
 
     cliente.connect()
     let ped = await cliente.query("SELECT pedidoid FROM pedidoslojaintegrada")
@@ -90,17 +100,50 @@ export async function armazenaPedidos(respostaPedidoEspecifico){
     const text = 'INSERT INTO pedidoslojaintegrada(pedidoid, pedidovalortotal, pedidostatus, pedidosincronizado, datasincronizacao) VALUES ($1, $2, $3, true, $4);'
     const values = [id, valorTotal, status, pedidosincronizado, data]
     cliente.connect()
-    cliente.query(text, values)
+    await cliente.query(text, values)
+
  
 }
 
-export async function alteraEstoque(respostaPedidoEspecifico){
+export async function alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, index){
 
     for (let i = 0; i < respostaPedidoEspecifico['itens'].length; i = i + 1) {
 
-        let estoque = respostaPedidoEspecifico['itens'].length
-        const text = 'update produtos set produtoqtdestoque = produtoqtdestoque - $1 where produtocodigobarra = $2'
-        const values = [dbPort, db, APIkey, APPkey]
+
+        let prodId = tableProdutosSql[index].produtoid
+        const text = 'select produtoqtdestoque where produtocodigobarra = $1'
+        const values = [respostaPedidoEspecifico.sku]
+        let saldoAnterior = await cliente.query(text, values)
+        let entrada = true
+        let entradaDescricao = 'Entrada'
+        let valorAjustado = respostaPedidoEspecifico['itens'].quantidade
+        const text2 = 'select produtoqtdestoque where produtocodigobarra = $1'
+        const values2 = [respostaPedidoEspecifico.sku]
+        let telaAlteracao = 'frmSincronLojaInt'
+        let dataAjuste = new Date();
+        
+
+        let estoque = respostaPedidoEspecifico['itens'].quantidade
+        let codigoBarra = respostaPedidoEspecifico['itens'].sku
+        const text3 = 'update produtos set produtoqtdestoque = produtoqtdestoque - $1 where produtocodigobarra = $2'
+        const values3 = [estoque, codigoBarra]
+
+        cliente.connect()
+        await cliente.query(text3, values3)
+
+
+        let estoqueAtual = await cliente.query(text2, values2)
+
+
+        const text4 = 'INSERT INTO estoquemovimento(estoqmovprodutoid, estoqmovqtdsaldoanterior, estoqmovmovimentoentrada, estoqmovmovimentoentradadescricao, estoqmovqtdajuste, estoqmovqtdsaldoatual, estoqmovtelaalteracao, dataAjuste) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);'
+        const values4 = [prodId, saldoAnterior, entrada, entradaDescricao, valorAjustado, estoqueAtual, telaAlteracao, dataAjuste ]
+
+        await cliente.query(text4, values4)
+
+        const text5 = 'INSERT INTO pedidoslojaintegrada(pedidosincronizado) VALUES ($1);'
+        const values5 = true
+
+        await cliente.query(text5, values5)
     }
 }
 
