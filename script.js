@@ -1,5 +1,5 @@
 import {chaveAPI, chaveApp} from "./connect.js"
-import connectDb, {armazenaPedidos, consultaPedidosBanco} from "./db.js" //importando o retorno da função em connectDb.js
+import connectDb, {armazenaPedidos, consultaPedidosBanco, alteraEstoque} from "./db.js" //importando o retorno da função em connectDb.js
 
 
 
@@ -626,12 +626,12 @@ async function comparaPedidos(){
 
     console.log(tableProdutosSql[i].produtocodigobarra)
 
-    //let verify = consultaBanco.includes(respostaPedidoEspecifico.numero)
+    let verify = consultaBanco.includes(respostaPedidoEspecifico.numero)
     let verify2 = Object.values(tableProdutosSql).includes(respostaPedidoEspecifico['itens'][i].sku)
 
     let index = tableProdutosSql.indexOf(respostaPedidoEspecifico.numero)
 
-    if (/*verify == false&& */ verify2 == true)
+    if (verify == false &&  verify2 == true)
       armazenaPedidos(respostaPedidoEspecifico)
       alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, index)
 
