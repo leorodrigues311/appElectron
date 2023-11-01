@@ -631,7 +631,7 @@ async function comparaPedidos(){
 
     let index = tableProdutosSql.indexOf(respostaPedidoEspecifico.numero)
 
-    if (verify == false && verify2 == true)
+    if (/*verify == false&& */ verify2 == true)
       armazenaPedidos(respostaPedidoEspecifico)
       alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, index)
 
