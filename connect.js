@@ -1,17 +1,15 @@
 const pg = require ("pg")
 
+const dotenv = require('dotenv');
+dotenv.config();
 
-var chaveAPI //'06738b02b56b29a661c8' Esta é a chave que criamos dentro do login de cada usuário da loja
-var chaveApp //'ed102c0b-ff23-4826-b296-cfd2c913b133' Esta é a chave de aplicação da Inova
-var database = '2'
-var portDatabase = 5432
-var baseUrl = 'https://api.awsli.com.br/v1/produto_estoque' // Essa é a URL de requisição do estoque
 
-window.addEventListener("load", recuperaChaveBanco)
-
+var chaveAPI = process.env.API_KEY//'06738b02b56b29a661c8' Esta é a chave que criamos dentro do login de cada usuário da loja
+var chaveApp = process.env.APP_KEY //'f97286a6-2d79-4327-9cc3-ee690af6a1b8' Esta é a chave de aplicação da Inova
+var database = process.env.DB
+var portDatabase = process.env.DB_PORT
 
 async function recuperaChaveBanco () {
-    alert("entrou")
     const Client = require ("pg").Client
     const cliente = new pg.Client({
         user: "postgres",
@@ -58,5 +56,5 @@ export {
     chaveApp,
     database,
     portDatabase,
-    baseUrl
+    recuperaChaveBanco
 }
