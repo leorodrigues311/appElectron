@@ -7,11 +7,11 @@ const btnSalvaConfig = document.getElementById('saveConfigButton');
 btnSalvaConfig.addEventListener("click", alteraChaveApp)
 btnSalvaConfig.addEventListener("click", criaTabela)
 
-window.addEventListener("load", function () {
+window.addEventListener("load", async function () {
 
 
     criaTabela()
-    alteraChaveApp()
+    await alteraChaveApp()
     recuperaChaveBanco()
 
 } )
@@ -215,7 +215,7 @@ export async function alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, 
 
 
 
-function alteraChaveApp(){
+async function alteraChaveApp(){
     let APIkey = chaveAPI
     let APPkey = chaveApp
     let db = database

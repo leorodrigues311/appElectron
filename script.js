@@ -119,6 +119,8 @@ async function consultaEstoque(chaveAPI, chaveApp) {
 
 const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
 
+  console.log(requestOptions)
+
   var resposta = await fetch("https://api.awsli.com.br/v1/produto", requestOptions)
     .then(response => response.json())
     .catch(error =>  console.log('error', error))
