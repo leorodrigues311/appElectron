@@ -1,4 +1,4 @@
-import {chaveAPI, chaveApp} from "./connect.js" // importando as chaves que estão armazenadas no banco
+import {chaveAPI, chaveApp} from "./db.js" // importando as chaves que estão armazenadas no banco
 import connectDb, {armazenaPedidos, consultaPedidosBanco, alteraEstoque} from "./db.js" //importando o retorno da função em connectDb.js
 
 

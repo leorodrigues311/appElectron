@@ -1,6 +1,17 @@
-import {chaveAPI, chaveApp, database, portDatabase, recuperaChaveBanco} from "./connect.js"
+import {recuperaChaveBanco} from "./connect.js"
 
 const pg = require ("pg")
+
+
+
+
+var chaveAPI //='06738b02b56b29a661c8'// Esta é a chave que criamos dentro do login de cada usuário da loja
+var chaveApp = 'f97286a6-2d79-4327-9cc3-ee690af6a1b8' // Esta é a chave de aplicação da Inova
+var database //= 'inova'
+var portDatabase //= 5432
+
+
+
 
 
 const btnSalvaConfig = document.getElementById('saveConfigButton');
@@ -9,12 +20,33 @@ btnSalvaConfig.addEventListener("click", criaTabela)
 
 window.addEventListener("load", async function () {
 
-
+    await recuperaTxtConfig()
     criaTabela()
     await alteraChaveApp()
     recuperaChaveBanco()
 
 } )
+
+
+
+async function recuperaTxtConfig(){
+
+    var txtRes = await fetch("config.txt")
+    .then(res => res.text())
+    .then(res=>{res=JSON.parse(res)
+        return res
+    })
+
+    chaveAPI = txtRes.Chave_API
+    database = txtRes.Banco_Nome
+    portDatabase = txtRes.Banco_Porta
+
+    console.log(txtRes)
+
+}
+
+
+
 
 async function criaTabela() {
     const Client = require ("pg").Client
@@ -243,4 +275,9 @@ async function alteraChaveApp(){
 
 
 
-export default connectDb()
+export default connectDb
+export {
+    chaveAPI,
+    chaveApp,
+    database,
+    portDatabase}
