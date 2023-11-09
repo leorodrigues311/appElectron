@@ -126,6 +126,7 @@ const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
   var resposta = {"objects": []}
   var count = 0
 
+  modalCarregamento.classList.remove('hidden');
   async function buscaRespostaApi(){
 
     let res = await fetch("https://api.awsli.com.br/v1/produto?limit=20&offset="+offset+"", requestOptions)
@@ -149,6 +150,7 @@ const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
   }
   await buscaRespostaApi()
 
+
   while(count <= totalCount){
 
     offset  = offset + 20
@@ -157,6 +159,7 @@ const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
     console.log(resposta)
 
   }
+  modalCarregamento.classList.add('hidden');
 
   console.log(resposta['objects'][7245])
 
