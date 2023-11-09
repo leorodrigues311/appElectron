@@ -7,16 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder && node copy-config.js"
   },
   "build": {
     "appId": "Painel-Loja-Integrada",
-    "extraFiles": [
-      {
-        "from": "./config.txt",
-        "to": "./"
-      }
-    ],
     "win": {
       "target": [
         "nsis"
@@ -31,7 +25,8 @@
     "bootstrap": "^5.3.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "fs-extra": "^10.0.0"
   },
   "devDependencies": {
     "@web/dev-server": "^0.3.3",

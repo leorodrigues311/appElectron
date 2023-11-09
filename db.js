@@ -1,4 +1,5 @@
 import {recuperaChaveBanco} from "./connect.js"
+const path = require('path');
 
 const pg = require ("pg")
 
@@ -33,7 +34,7 @@ window.addEventListener("load", async function () {
 
 async function recuperaTxtConfig(){
 
-    var txtRes = await fetch("config.txt")
+    var txtRes = await fetch(path.join(__dirname, 'config.txt'))
     .then(res => res.text())
     .then(res=>{res=JSON.parse(res)
         return res
