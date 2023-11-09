@@ -34,7 +34,7 @@ window.addEventListener("load", async function () {
 
 async function recuperaTxtConfig(){
 
-    var txtRes = await fetch(path.join(__dirname, 'config.txt'))
+    var txtRes = await fetch(path.join('../../config.txt'))
     .then(res => res.text())
     .then(res=>{res=JSON.parse(res)
         return res

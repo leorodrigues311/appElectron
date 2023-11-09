@@ -1,5 +1,6 @@
 {
   "name": "painel_de_integracao-loja_integrada",
+  "productName": "Painel de Integração",
   "version": "1.0.0",
   "description": "Painel de integração Loja Integrada",
   "main": "main.js",
@@ -11,6 +12,12 @@
   },
   "build": {
     "appId": "Painel-Loja-Integrada",
+    "extraFiles": [
+      {
+        "from": "./config.txt",
+        "to": "."
+      }
+    ],
     "win": {
       "target": [
         "nsis"
