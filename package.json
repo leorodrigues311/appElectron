@@ -1,14 +1,30 @@
 {
-  "name": "electron",
+  "name": "painel_de_integracao-loja_integrada",
   "version": "1.0.0",
-  "description": "",
+  "description": "Painel de integração Loja Integrada",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
-  "author": "Leonardo Rodrigues",
+  "build": {
+    "appId": "Painel-Loja-Integrada",
+    "extraFiles": [
+      {
+        "from": "./config.txt",
+        "to": "./"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "./tray-icon.png"
+    }
+  },
+  "author": "Inova Sistemas",
   "license": "ISC",
   "dependencies": {
     "@types/pg": "^8.10.5",
