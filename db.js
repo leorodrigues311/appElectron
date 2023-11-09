@@ -9,6 +9,7 @@ var chaveAPI //='06738b02b56b29a661c8'// Esta é a chave que criamos dentro do l
 var chaveApp = 'f97286a6-2d79-4327-9cc3-ee690af6a1b8' // Esta é a chave de aplicação da Inova
 var database //= 'inova'
 var portDatabase //= 5432
+var tableProdutosSql
 
 
 
@@ -24,6 +25,7 @@ window.addEventListener("load", async function () {
     criaTabela()
     await alteraChaveApp()
     recuperaChaveBanco()
+    tableProdutosSql = await connectDb()
 
 } )
 
@@ -113,7 +115,9 @@ async function connectDb(){
 
     //finaliza a conexão com o banco de dados depois de rodar a query
     .finally(() => cliente.end())
+    console.log("connectDb", r)
     return r
+
 
 }
 
@@ -271,13 +275,8 @@ async function alteraChaveApp(){
 
 
 
-
-
-
-
-export default connectDb
 export {
     chaveAPI,
     chaveApp,
     database,
-    portDatabase}
+    portDatabase, tableProdutosSql}

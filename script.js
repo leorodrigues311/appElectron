@@ -1,5 +1,5 @@
 import {chaveAPI, chaveApp} from "./db.js" // importando as chaves que estão armazenadas no banco
-import connectDb, {armazenaPedidos, consultaPedidosBanco, alteraEstoque} from "./db.js" //importando o retorno da função em connectDb.js
+import {tableProdutosSql, armazenaPedidos, consultaPedidosBanco, alteraEstoque} from "./db.js" //importando o retorno da função em connectDb.js
 
 
 
@@ -18,10 +18,8 @@ window.addEventListener("load", function () {
 })
 
 
-
 var putEstoque = new Array
 var modalCadastraProduto
-var tableProdutosSql = await connectDb
 var produtosNaoAdicionados = new Array //aqui ficam os produtos que não foram encontrados
 var produtos = new Array// aqui ficam os produtos que são encontrados no banco de dados depois de comparados com a requisição
 var respostaPedidos = new Array
@@ -30,6 +28,7 @@ var respostaPedidoEspecifico = new Array
 // este botão gera a tabela de produtos que são encontrados no inova e no loja integrada, e exibe no modal de envio de estoque 
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", async() => {
+  console.log(tableProdutosSql)
   modalCadastraProduto = false
   await consultaEstoque(chaveAPI, chaveApp)
   montaTabela(produtos,modalCadastraProduto)
@@ -119,13 +118,52 @@ async function consultaEstoque(chaveAPI, chaveApp) {
 
 const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
 
-  console.log(requestOptions)
+  console.log("entrou no compara produtos")
 
-  var resposta = await fetch("https://api.awsli.com.br/v1/produto", requestOptions)
+
+  var offset = 0
+  var totalCount = 0
+  var resposta = {"objects": []}
+  var count = 0
+
+  async function buscaRespostaApi(){
+
+    let res = await fetch("https://api.awsli.com.br/v1/produto?limit=20&offset="+offset+"", requestOptions)
     .then(response => response.json())
     .catch(error =>  console.log('error', error))
 
+    console.log(resposta)
+
+    offset = res['meta'].offset
+    totalCount = res['meta'].total_count
+
+    count = (count + 20)
+
+
+    for (let i = 0; i < res['objects'].length; i = i + 1) {
+
+      resposta['objects'].push(res['objects'][i])
+  
+    }
+
+  }
+  await buscaRespostaApi()
+
+  while(count <= totalCount){
+
+    offset  = offset + 20
+    await buscaRespostaApi()
+    console.log(count)
+    console.log(resposta)
+
+  }
+
+  console.log(resposta['objects'][7245])
+
+
+
   let inovaBarcodes = new Array
+
   for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
 
     inovaBarcodes.push(tableProdutosSql[i].produtocodigobarra)
