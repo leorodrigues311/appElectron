@@ -11,6 +11,7 @@ var chaveApp = 'f97286a6-2d79-4327-9cc3-ee690af6a1b8' // Esta é a chave de apli
 var database //= 'inova'
 var portDatabase //= 5432
 var tableProdutosSql
+var portServer
 
 
 
@@ -43,6 +44,7 @@ async function recuperaTxtConfig(){
     chaveAPI = txtRes.Chave_API
     database = txtRes.Banco_Nome
     portDatabase = txtRes.Banco_Porta
+    portServer = txtRes.Server_porta
 
     console.log(txtRes)
 
@@ -138,6 +140,27 @@ export async function consultaPedidosBanco(){
     cliente.connect()
     let ped = await cliente.query("SELECT pedidoid FROM pedidoslojaintegrada")
     return ped
+
+}
+
+export async function consultaUltimoPedido(){
+
+
+    
+    const Client = require ("pg").Client
+    const cliente = new pg.Client({
+        user: "postgres",
+        password: "inova@613188#",
+        host: "127.0.0.1",
+        port: portDatabase,
+        database: database
+        })
+
+    cliente.connect()
+    let ped = await cliente.query("SELECT MAX(pedidoid) pedidoid FROM pedidoslojaintegrada where pedidosincronizado = true")
+    console.log(ped["rows"])
+    return ped["rows"][0]
+
 
 }
 
@@ -280,4 +303,4 @@ export {
     chaveAPI,
     chaveApp,
     database,
-    portDatabase, tableProdutosSql}
+    portDatabase, portServer, tableProdutosSql}
