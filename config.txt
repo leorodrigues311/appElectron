@@ -1,5 +1,5 @@
 {
-        "Chave_API" : "06738b02b56b29a661c8",
+        "Chave_API" : "4944ca8a089c7eb06f17",
         "Banco_Nome" : "1",
         "Banco_Porta" : "5432",
         "server_porta" : "3336"

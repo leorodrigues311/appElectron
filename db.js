@@ -12,6 +12,7 @@ var database //= 'inova'
 var portDatabase //= 5432
 var tableProdutosSql
 var portServer
+var ultimoPedido
 
 
 
@@ -27,7 +28,7 @@ window.addEventListener("load", async function () {
     criaTabela()
     await alteraChaveApp()
     recuperaChaveBanco()
-    tableProdutosSql = await connectDb()
+    await connectDb()
 
 } )
 
@@ -35,7 +36,7 @@ window.addEventListener("load", async function () {
 
 async function recuperaTxtConfig(){
 
-    var txtRes = await fetch(path.join('../../config.txt'))
+    var txtRes = await fetch(path.join('config.txt'))
     .then(res => res.text())
     .then(res=>{res=JSON.parse(res)
         return res
@@ -46,7 +47,6 @@ async function recuperaTxtConfig(){
     portDatabase = txtRes.Banco_Porta
     portServer = txtRes.Server_porta
 
-    console.log(txtRes)
 
 }
 
@@ -118,7 +118,7 @@ async function connectDb(){
 
     //finaliza a conexão com o banco de dados depois de rodar a query
     .finally(() => cliente.end())
-    console.log("connectDb", r)
+    tableProdutosSql = r
     return r
 
 
@@ -158,7 +158,6 @@ export async function consultaUltimoPedido(){
 
     cliente.connect()
     let ped = await cliente.query("SELECT MAX(pedidoid) pedidoid FROM pedidoslojaintegrada where pedidosincronizado = true")
-    console.log(ped["rows"])
     return ped["rows"][0]
 
 
@@ -303,4 +302,7 @@ export {
     chaveAPI,
     chaveApp,
     database,
-    portDatabase, portServer, tableProdutosSql}
+    portDatabase, portServer, tableProdutosSql, ultimoPedido}
+
+export default connectDb
+

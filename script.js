@@ -1,6 +1,6 @@
 import {chaveAPI, chaveApp} from "./db.js" // importando as chaves que estão armazenadas no banco
 import {tableProdutosSql, armazenaPedidos, consultaPedidosBanco, alteraEstoque, consultaUltimoPedido} from "./db.js" //importando o retorno da função em connectDb.js
-
+import connectDb from "./db.js"
 
 
 window.addEventListener("load", function () {
@@ -27,7 +27,6 @@ var respostaPedidoEspecifico = new Array
 // este botão gera a tabela de produtos que são encontrados no inova e no loja integrada, e exibe no modal de envio de estoque 
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", async() => {
-  console.log(tableProdutosSql)
   modalCadastraProduto = false
   await consultaEstoque(chaveAPI, chaveApp)
   montaTabela(produtos,modalCadastraProduto)
@@ -100,6 +99,7 @@ btnCadastraProduto.addEventListener("click", async () => {
 
 // esta função faz um get na loja integrada, buscando o estoque de todos os produtos, e logo em seguida chama a "comparaProdutos", que compara os produtos em busca de produtos iguais no inova e no loja integrada
 async function consultaEstoque(chaveAPI, chaveApp) {
+  await connectDb()
 
   var headers = new Headers();
   headers.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
@@ -117,9 +117,6 @@ async function consultaEstoque(chaveAPI, chaveApp) {
 
 const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
 
-  console.log("entrou no compara produtos")
-
-
   var offset = 0
   var totalCount = 0
   var resposta = {"objects": []}
@@ -128,14 +125,11 @@ const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
   modalCarregamento.classList.remove('hidden');
   async function buscaRespostaApi(){
 
-    console.log(chaveAPI, chaveApp, offset, requestOptions)
 
     try{
       let res = await fetch("http://localhost:3336/products?offset="+offset+"", requestOptions)
       .then(response => response.json())
       .catch(error =>  console.log('error', error))
-
-      console.log(res)
 
       offset = res['meta'].offset
       totalCount = res['meta'].total_count
@@ -161,14 +155,9 @@ const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
 
     offset  = offset + 20
     await buscaRespostaApi()
-    console.log(count)
-    console.log(resposta)
 
   }
   modalCarregamento.classList.add('hidden');
-
-  console.log(resposta['objects'][7245])
-
 
 
   let inovaBarcodes = new Array
@@ -327,7 +316,6 @@ function addRow(produtos, indexTable, produtosNaoAdicionados, modalCadastraProdu
 // esta função envia o estoque que temos no Inova para o loja integrada
 async function enviaEstoque(chaveAPI, chaveApp, putEstoque) {
   let date = new Date;
-  console.log("Envia Estoque,", date)
   var myHeaders = new Headers();
   myHeaders.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
   myHeaders.append("Content-Type", "application/json");
@@ -351,7 +339,7 @@ async function enviaEstoque(chaveAPI, chaveApp, putEstoque) {
       body: raw,
       redirect: 'follow'
     };
-
+/*
 try{
     fetch("http://localhost:3336/products/estoque", requestOptions)
       .then(response => response.text())
@@ -361,7 +349,7 @@ try{
 
   console.log("Não foi possível alterar o estoque do produto")
 }
-
+*/
   }
 }
 
@@ -410,7 +398,7 @@ async function cadastraProduto(produtosNaoAdicionados, chaveAPI, chaveApp){
       redirect: 'follow'
     };
 
-    try{
+   /* try{
     await fetch("http://localhost:3336/products/", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
@@ -420,7 +408,7 @@ async function cadastraProduto(produtosNaoAdicionados, chaveAPI, chaveApp){
         console.log("Não foi possível cadastrar produto")
         console.log(e)
     }
-
+*/
     }
 
 }
@@ -431,6 +419,7 @@ async function consultaPedidos(chaveAPI, chaveApp){
 
   var myHeaders = new Headers();
   myHeaders.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
+  console.log(chaveAPI, chaveApp)
   
   var requestOptions = {
     method: 'GET',
@@ -439,15 +428,16 @@ async function consultaPedidos(chaveAPI, chaveApp){
   };
 
   var ultimoPedido = await consultaUltimoPedido()
-  console.log(ultimoPedido)
-  
+
+  console.log(ultimoPedido.pedidoid)
   try{
-  respostaPedidos = fetch("http://localhost:3336/orders/search?since_numero="+ultimoPedido+"", requestOptions)
+  respostaPedidos = await fetch("http://localhost:3336/orders/search?since_numero:"+ultimoPedido.pedidoid+"", requestOptions)
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
 
     console.log(respostaPedidos)
+
   } catch(e){
 
     console.log("Não foi possível receber os pedidos")
@@ -500,9 +490,8 @@ return respostaPedidos
 
 async function comparaPedidos(){
   let date = new Date
-  console.log("Compara pedidos", date)
   let pedidos = await consultaPedidos(chaveAPI, chaveApp)
-  console.log(pedidos)
+
   if (pedidos != undefined){
 
     for (let i = 0; i < pedidos['objects'].length; i = i + 1) {
@@ -518,7 +507,7 @@ async function comparaPedidos(){
       };
   
    try{
-      respostaPedidoEspecifico = fetch("http://localhost:3336/orders/search?since_numero:"+pedidoNumero+"", requestOptions)
+      respostaPedidoEspecifico = fetch("http://localhost:3336/orders/search?since_numero="+pedidoNumero+"", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
@@ -688,7 +677,6 @@ async function comparaPedidos(){
       }, 0);
   
   
-      console.log(verify3)
       if (verify == false &&  verify2 == true || verify == true && verify2 == true && respostaPedidoEspecifico['situacao'].id == 8 && verify3 <= 1){
         armazenaPedidos(respostaPedidoEspecifico)
         alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, index)
