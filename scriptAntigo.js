@@ -1,24 +1,27 @@
-import {chaveAPI, chaveApp} from "./db.js" // importando as chaves que estão armazenadas no banco
-import {tableProdutosSql, armazenaPedidos, consultaPedidosBanco, alteraEstoque, consultaUltimoPedido} from "./db.js" //importando o retorno da função em connectDb.js
-import connectDb from "./db.js"
+import {chaveAPI, chaveApp} from "./connect.js" // importando as chaves que estão armazenadas no banco
+import connectDb, {armazenaPedidos, consultaPedidosBanco, alteraEstoque} from "./db.js" //importando o retorno da função em connectDb.js
+
 
 
 window.addEventListener("load", function () {
 
 
+  
   setInterval(async function(){
     await consultaEstoque(chaveAPI, chaveApp)
-    await enviaEstoque(chaveAPI, chaveApp, putEstoque)
-    setTimeout(comparaPedidos, 2500 * 60)
+    enviaEstoque(chaveAPI, chaveApp, putEstoque)
+    setTimeout(comparaPedidos, 1500 * 60)
 
-  }, 5000 * 60)
+  }, 3000 * 60)
 
 
 })
 
 
+
 var putEstoque = new Array
 var modalCadastraProduto
+var tableProdutosSql = await connectDb
 var produtosNaoAdicionados = new Array //aqui ficam os produtos que não foram encontrados
 var produtos = new Array// aqui ficam os produtos que são encontrados no banco de dados depois de comparados com a requisição
 var respostaPedidos = new Array
@@ -28,7 +31,7 @@ var respostaPedidoEspecifico = new Array
 const btnEnviaEstoque  = document.getElementById('btnEnviaEstoque');
 btnEnviaEstoque.addEventListener("click", async() => {
   modalCadastraProduto = false
-  //await consultaEstoque(chaveAPI, chaveApp)
+  await consultaEstoque(chaveAPI, chaveApp)
   montaTabela(produtos,modalCadastraProduto)
   modalEnvioEstoque.classList.remove('hidden');
   btnCancelaEnvioEstoque.classList.remove('hidden');
@@ -38,8 +41,8 @@ btnEnviaEstoque.addEventListener("click", async() => {
 
 // este botão fica dentro do modal de enviar estoque, ele confirma o envio, alterando o estoque da loja integrada e limpando a tabela que foi gerada no modal
 const btnConfirmaEnvioEstoque  = document.getElementById('btnConfirmaEnvioEstoque');
-btnConfirmaEnvioEstoque.addEventListener("click", async function(){
-  await enviaEstoque(chaveAPI, chaveApp, putEstoque)
+btnConfirmaEnvioEstoque.addEventListener("click", () => {
+  enviaEstoque(chaveAPI, chaveApp, putEstoque)
   alert("Estoque Enviado com sucesso")
   limpaTabela()
   produtos = new Array
@@ -99,7 +102,6 @@ btnCadastraProduto.addEventListener("click", async () => {
 
 // esta função faz um get na loja integrada, buscando o estoque de todos os produtos, e logo em seguida chama a "comparaProdutos", que compara os produtos em busca de produtos iguais no inova e no loja integrada
 async function consultaEstoque(chaveAPI, chaveApp) {
-  await connectDb()
 
   var headers = new Headers();
   headers.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
@@ -117,52 +119,13 @@ async function consultaEstoque(chaveAPI, chaveApp) {
 
 const comparaProdutos = async (requestOptions, modalCadastraProduto) => {
 
-  var offset = 0
-  var totalCount = 0
-  var resposta = {"objects": []}
-  var count = 0
+  console.log(requestOptions)
 
-  modalCarregamento.classList.remove('hidden');
-
-  async function buscaRespostaApi(){
-
-
-    try{
-      let res = await fetch("http://localhost:3336/products?offset="+offset+"", requestOptions)
-      .then(response => response.json())
-      .catch(error =>  console.log('error', error))
-
-      offset = res['meta'].offset
-      totalCount = res['meta'].total_count
-
-      count = count + 20
-
-
-      for (let i = 0; i < res['objects'].length; i = i + 1) {
-
-        resposta['objects'].push(res['objects'][i])
-    
-      }
-  } catch(e){
-    console.log("Não foi possível receber os produtos")
-    console.log(e)
-  }
-
-  }
-  await buscaRespostaApi()
-
-
-  while(count <= totalCount){
-
-    offset  = offset + 20
-    await buscaRespostaApi()
-
-  }
-  modalCarregamento.classList.add('hidden');
-
+  var resposta = await fetch("https://api.awsli.com.br/v1/produto", requestOptions)
+    .then(response => response.json())
+    .catch(error =>  console.log('error', error))
 
   let inovaBarcodes = new Array
-
   for (let i = 0; i < tableProdutosSql.length; i = i + 1) {
 
     inovaBarcodes.push(tableProdutosSql[i].produtocodigobarra)
@@ -315,8 +278,9 @@ function addRow(produtos, indexTable, produtosNaoAdicionados, modalCadastraProdu
 
 
 // esta função envia o estoque que temos no Inova para o loja integrada
-async function enviaEstoque(chaveAPI, chaveApp, putEstoque) {
+function enviaEstoque(chaveAPI, chaveApp, putEstoque) {
   let date = new Date;
+  console.log("Envia Estoque,", date)
   var myHeaders = new Headers();
   myHeaders.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
   myHeaders.append("Content-Type", "application/json");
@@ -326,9 +290,8 @@ async function enviaEstoque(chaveAPI, chaveApp, putEstoque) {
     var envio = new Array
 
     envio = {
-      "id": putEstoque[i].idLojaIntegrada,
       "gerenciado": true,
-      "quantity": (parseInt(putEstoque[i].estoque))
+      "quantidade": (parseInt(putEstoque[i].estoque))
     }
 
 
@@ -340,17 +303,13 @@ async function enviaEstoque(chaveAPI, chaveApp, putEstoque) {
       body: raw,
       redirect: 'follow'
     };
-/*
-try{
-    fetch("http://localhost:3336/products/estoque", requestOptions)
+
+
+    fetch("https://api.awsli.com.br/v1/produto_estoque/" + putEstoque[i].idLojaIntegrada, requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
-} catch(e){
 
-  console.log("Não foi possível alterar o estoque do produto")
-}
-*/
   }
 }
 
@@ -399,17 +358,11 @@ async function cadastraProduto(produtosNaoAdicionados, chaveAPI, chaveApp){
       redirect: 'follow'
     };
 
-   /* try{
-    await fetch("http://localhost:3336/products/", requestOptions)
+    await fetch("https://api.awsli.com.br/v1/produto", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
-    } catch(e){
 
-        console.log("Não foi possível cadastrar produto")
-        console.log(e)
-    }
-*/
     }
 
 }
@@ -420,74 +373,70 @@ async function consultaPedidos(chaveAPI, chaveApp){
 
   var myHeaders = new Headers();
   myHeaders.append("Authorization", "chave_api " + chaveAPI + " aplicacao " +  chaveApp);
-  console.log(chaveAPI, chaveApp)
   
   var requestOptions = {
     method: 'GET',
     headers: myHeaders,
     redirect: 'follow'
   };
-
-  var ultimoPedido = await consultaUltimoPedido()
-
-  console.log(ultimoPedido.pedidoid)
-
   
-  if (ultimoPedido == null){
-    ultimoPedido = 1
-  }
+  respostaPedidos = fetch("https://api.awsli.com.br/v1/pedido/search/?since_numero=135&situacao_id=8&pagamento_id=24&limit=15", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+
+    console.log(respostaPedidos)
 
 
-  var offset = 0
-  var totalCount = 0
-  var pedidos = {"objects": []}
-  var count = 0
-
-  async function acumulaPedidos(){
-
-    try{
-    let res = await fetch("http://localhost:3336/orders/search?since_numero="+ultimoPedido.pedidoid+"&offset="+offset, requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
-
-      console.log("res",res)
-
-      offset = res['meta'].offset
-      totalCount = res['meta'].total_count
-      count = (count + 20)
-
-
-      for (let i = 0; i < res['objects'].length; i = i + 1) {
-        pedidos['objects'].push(res['objects'][i])
-      }
-
-      console.log(pedidos)
-
-    } catch(e){
-
-      console.log("Não foi possível receber os pedidos")
-      console.log(e)
+return respostaPedidos 
+/*= {
+  "meta": {
+    "limit": 15,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total_count": 2
+  },
+  "objects": [
+    {
+      "cliente": "/api/v1/cliente/34220641",
+      "data_criacao": "2022-10-31T12:28:05.704751",
+      "data_expiracao": "2022-11-06T12:28:05.782308",
+      "data_modificacao": "2022-10-31T12:28:12.653648",
+      "id_anymarket": null,
+      "id_externo": null,
+      "numero": 165,
+      "peso_real": "0.450",
+      "resource_uri": "/api/v1/pedido/165",
+      "situacao": {
+        "aprovado": false,
+        "cancelado": true,
+        "codigo": "pedido_cancelado",
+        "final": true,
+        "id": 8,
+        "nome": "Pedido Cancelado",
+        "notificar_comprador": true,
+        "padrao": false,
+        "resource_uri": "/api/v1/situacao/8"
+      },
+      "utm_campaign": null,
+      "valor_desconto": "0.00",
+      "valor_envio": "21.38",
+      "valor_subtotal": "11.10",
+      "valor_total": "32.48"
     }
+  ]
+}
 
-  }
-
-  await acumulaPedidos()
-
-  while(count <= totalCount){
-    console.log("Count:",count,"total Count:",totalCount)
-    offset  = offset + 20
-    await acumulaPedidos()
-  }
-
-  return pedidos
+*/
 }
 
 
 async function comparaPedidos(){
   let date = new Date
+  console.log("Compara pedidos", date)
   let pedidos = await consultaPedidos(chaveAPI, chaveApp)
-
+  console.log(pedidos)
   if (pedidos != undefined){
 
     for (let i = 0; i < pedidos['objects'].length; i = i + 1) {
@@ -502,15 +451,12 @@ async function comparaPedidos(){
         redirect: 'follow'
       };
   
-   try{
-      respostaPedidoEspecifico = fetch("http://localhost:3336/orders/search?since_numero="+pedidoNumero+"", requestOptions)
+   
+      respostaPedidoEspecifico = fetch("https://api.awsli.com.br/v1/pedido/"+pedidoNumero+"", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
-   } catch(e){
-      console.log("Não foi possível receber produto específico")
-      console.log(e)
-   }
+  
   
       /*
       respostaPedidoEspecifico = {
@@ -673,6 +619,7 @@ async function comparaPedidos(){
       }, 0);
   
   
+      console.log(verify3)
       if (verify == false &&  verify2 == true || verify == true && verify2 == true && respostaPedidoEspecifico['situacao'].id == 8 && verify3 <= 1){
         armazenaPedidos(respostaPedidoEspecifico)
         alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, index)
