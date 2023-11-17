@@ -1,4 +1,6 @@
+
 import {recuperaChaveBanco} from "./connect.js"
+import {indexPedidoEspecifico} from "./script.js" 
 const path = require('path');
 
 const pg = require ("pg")
@@ -108,7 +110,7 @@ async function connectDb(){
 
 
     cliente.connect()
-    let r = await cliente.query("select produtoid, produtodescricao, produtocodigobarra, produtoqtdestoque, categoriacodigo from produtos left join categorias on categorias.categoriaid = produtos.produtocategoriaid")
+    let r = await cliente.query("select produtoid, produtodescricao, produtocodigobarra, produtocodigoadicional, produtoqtdestoque, categoriacodigo from produtos left join categorias on categorias.categoriaid = produtos.produtocategoriaid where produtocodigoadicional is not null and produtocodigoadicional != ''")
     .then(results => {
         let resultado = results.rows
         resultado = JSON.parse(JSON.stringify(resultado))
@@ -165,6 +167,7 @@ export async function consultaUltimoPedido(){
 
 export async function armazenaPedidos(respostaPedidoEspecifico){
 
+    console.log("Entou no armazena pedidos")
  
     let id = respostaPedidoEspecifico.numero
     let valorTotal = respostaPedidoEspecifico['pagamentos'][0].valor
@@ -190,7 +193,7 @@ export async function armazenaPedidos(respostaPedidoEspecifico){
  
 }
 
-export async function alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, index){
+export async function alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, indexPedidoEspecifico){
 
 
     const Client = require ("pg").Client
@@ -206,10 +209,12 @@ export async function alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, 
 
     for (let i = 0; i < respostaPedidoEspecifico['itens'].length; i = i + 1) {
 
+        console.log("Table produtos:",tableProdutosSql)
+        console.log(indexPedidoEspecifico)
 
 
-        let prodId = tableProdutosSql[index].produtoid
-        const text = 'select produtoqtdestoque from produtos where produtocodigobarra = $1'
+        let prodId = tableProdutosSql[indexPedidoEspecifico].produtoid
+        const text = 'select produtoqtdestoque from produtos where produtocodigoadicional = $1'
         const values = [respostaPedidoEspecifico['itens'][i].sku]
 
         let saldoAnterior = await cliente.query(text, values)
@@ -234,14 +239,14 @@ export async function alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, 
 
             entrada = true
             entradaDescricao = "Entrada"
-            text2 = 'update produtos set produtoqtdestoque = (produtoqtdestoque + $1) where produtocodigobarra = $2'
+            text2 = 'update produtos set produtoqtdestoque = (produtoqtdestoque + $1) where produtocodigoadicional = $2'
         }
 
         else if(respostaPedidoEspecifico['situacao'].id == 9){
 
             entrada = false
             entradaDescricao = "Saida"
-            text2 = 'update produtos set produtoqtdestoque = (produtoqtdestoque - $1) where produtocodigobarra = $2'
+            text2 = 'update produtos set produtoqtdestoque = (produtoqtdestoque - $1) where produtocodigoadicional = $2'
 
         }
 
