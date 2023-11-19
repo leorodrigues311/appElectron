@@ -1,6 +1,6 @@
 
 import {recuperaChaveBanco} from "./connect.js"
-import {indexPedidoEspecifico} from "./script.js" 
+
 const path = require('path');
 
 const pg = require ("pg")
@@ -159,7 +159,7 @@ export async function consultaUltimoPedido(){
         })
 
     cliente.connect()
-    let ped = await cliente.query("SELECT MAX(pedidoid) pedidoid FROM pedidoslojaintegrada where pedidosincronizado = true")
+    let ped = await cliente.query("SELECT MAX(pedidomovimentoid) pedidoid FROM pedidoslojaintegrada where pedidosincronizado = true")
     return ped["rows"][0]
 
 
@@ -168,6 +168,7 @@ export async function consultaUltimoPedido(){
 export async function armazenaPedidos(respostaPedidoEspecifico){
 
     console.log("Entou no armazena pedidos")
+    console.log(respostaPedidoEspecifico)
  
     let id = respostaPedidoEspecifico.numero
     let valorTotal = respostaPedidoEspecifico['pagamentos'][0].valor
@@ -175,20 +176,27 @@ export async function armazenaPedidos(respostaPedidoEspecifico){
     let data = new Date();
     let dataPedido = respostaPedidoEspecifico.data_modificacao
 
-    const text = 'INSERT INTO pedidoslojaintegrada(pedidoid, pedidovalortotal, pedidostatus, datasincronizacao, datapedido) VALUES ($1, $2, $3, $4, $5);'
-    const values = [id, valorTotal, status, data, dataPedido]
+    if(respostaPedidoEspecifico['situacao'].id === 8 || respostaPedidoEspecifico['situacao'].id === 9){
 
+        const text = 'INSERT INTO pedidoslojaintegrada(pedidoid, pedidovalortotal, pedidostatus, datasincronizacao, datapedido) VALUES ($1, $2, $3, $4, $5);'
+        const values = [id, valorTotal, status, data, dataPedido]
 
-    const Client = require ("pg").Client
-    const cliente = new pg.Client({
-        user: "postgres",
-        password: "inova@613188#",
-        host: "127.0.0.1",
-        port: portDatabase,
-        database: database
-        })
-    cliente.connect()
-    await cliente.query(text, values)
+        const Client = require ("pg").Client
+        const cliente = new pg.Client({
+            user: "postgres",
+            password: "inova@613188#",
+            host: "127.0.0.1",
+            port: portDatabase,
+            database: database
+            })
+        cliente.connect()
+        await cliente.query(text, values)
+
+    } else {
+        console.log("Pedido não cumpre o status esperado")
+
+    }
+
 
  
 }
@@ -210,56 +218,47 @@ export async function alteraEstoque(respostaPedidoEspecifico, tableProdutosSql, 
     for (let i = 0; i < respostaPedidoEspecifico['itens'].length; i = i + 1) {
 
         console.log("Table produtos:",tableProdutosSql)
-        console.log(indexPedidoEspecifico)
+        console.log(await indexPedidoEspecifico)
 
 
-        let prodId = tableProdutosSql[indexPedidoEspecifico].produtoid
+        let prodId = tableProdutosSql[await indexPedidoEspecifico].produtoid
         const text = 'select produtoqtdestoque from produtos where produtocodigoadicional = $1'
-        const values = [respostaPedidoEspecifico['itens'][i].sku]
+        const values = [respostaPedidoEspecifico['itens'][i].sku.toUpperCase()]
 
         let saldoAnterior = await cliente.query(text, values)
+        console.log(saldoAnterior)
         saldoAnterior = parseInt(saldoAnterior['rows'][0].produtoqtdestoque)
    
         let valorAjustado = parseInt([respostaPedidoEspecifico['itens'][i].quantidade])
         let telaAlteracao = 'frmSincronLojaInt'
         let dataAjuste = new Date();
         let id = respostaPedidoEspecifico.numero
-
-        let entrada
-        let entradaDescricao
-        let text2
-
-        let text5 = "select pedidoid from pedidoslojaintegrada where pedidoid = $1 and pedidostatus = 'Pedido Efetuado'"
-        let values5 = [id]
-
-        let verifyPedidoCancelado = await cliente.query(text5, values5)
-
-
-        if (respostaPedidoEspecifico['situacao'].id == 8 && verifyPedidoCancelado['rows'][0].pedidoid == id){
-
+        let entrada;
+        let entradaDescricao;
+        let text2;
+        
+        let isPedidoCancelado = respostaPedidoEspecifico['situacao'].id === 8
+        
+        if (isPedidoCancelado) {
             entrada = true
             entradaDescricao = "Entrada"
             text2 = 'update produtos set produtoqtdestoque = (produtoqtdestoque + $1) where produtocodigoadicional = $2'
-        }
-
-        else if(respostaPedidoEspecifico['situacao'].id == 9){
-
+        } else if (respostaPedidoEspecifico['situacao'].id === 9) {
             entrada = false
             entradaDescricao = "Saida"
             text2 = 'update produtos set produtoqtdestoque = (produtoqtdestoque - $1) where produtocodigoadicional = $2'
-
         }
-
         
-
-        let estoque = parseInt(respostaPedidoEspecifico['itens'][i].quantidade)
-        let codigoBarra = respostaPedidoEspecifico['itens'][i].sku
-
-        const values2 = [estoque, codigoBarra]
-
-        await cliente.query(text2, values2)
-
-
+        if (text2 !== undefined) {
+            let estoque = parseInt(respostaPedidoEspecifico['itens'][i].quantidade)
+            let codigoBarra = respostaPedidoEspecifico['itens'][i].sku.toUpperCase()
+        
+            const values2 = [estoque, codigoBarra]
+        
+            await cliente.query(text2, values2)
+        } else {
+            console.log("text2 é undefined. Condição não atendida ou valor inesperado.")
+        }
         let estoqueAtual = await cliente.query(text, values)
         estoqueAtual = parseInt(estoqueAtual['rows'][0].produtoqtdestoque)
         

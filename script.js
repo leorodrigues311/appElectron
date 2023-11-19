@@ -448,9 +448,50 @@ async function consultaPedidos(chaveAPI, chaveApp){
 
 
     try{
+      /*
     let res = await fetch("http://localhost:3336/orders/search?since_numero="+ultimoPedido.pedidoid+"&offset="+offset, requestOptions)
       .then(res => res.json())
       .catch(error => console.log('error', error));
+      */
+
+      let res = {
+        "meta": {
+          "limit": 15,
+          "next": null,
+          "offset": 0,
+          "previous": null,
+          "total_count": 2
+        },
+        "objects": [
+          {
+            "cliente": "/api/v1/cliente/34220641",
+            "data_criacao": "2022-10-31T12:28:05.704751",
+            "data_expiracao": "2022-11-06T12:28:05.782308",
+            "data_modificacao": "2022-10-31T12:28:12.653648",
+            "id_anymarket": null,
+            "id_externo": null,
+            "numero": 166,
+            "peso_real": "0.450",
+            "resource_uri": "/api/v1/pedido/165",
+            "situacao": {
+              "aprovado": false,
+              "cancelado": true,
+              "codigo": "pedido_cancelado",
+              "final": true,
+              "id": 8,
+              "nome": "Pedido Cancelado",
+              "notificar_comprador": true,
+              "padrao": false,
+              "resource_uri": "/api/v1/situacao/8"
+            },
+            "utm_campaign": null,
+            "valor_desconto": "0.00",
+            "valor_envio": "21.38",
+            "valor_subtotal": "11.10",
+            "valor_total": "32.48"
+          }
+        ]
+      }
 
       for (let i = 0; i < res['objects'].length; i = i + 1) {
         respostaPedidos['objects'].push(res['objects'][i])
@@ -509,10 +550,144 @@ async function comparaPedidos(){
         redirect: 'follow'
       };
   
-      try{
+      try{/*
           respostaPedidoEspecifico = await fetch("http://localhost:3336/orders/?id="+pedidoNumero+"", requestOptions)
           .then(respostaPedidoEspecifico => respostaPedidoEspecifico.json())
           .catch(error => console.log('error', error));
+          */
+
+          respostaPedidoEspecifico = {
+            "cliente": {
+              "cnpj": null,
+              "cpf": "14093771723",
+              "data_nascimento": null,
+              "email": "teste@lojateste.com.br",
+              "id": 34220641,
+              "nome": "CLiente Teste",
+              "razao_social": null,
+              "resource_uri": "/api/v1/cliente/34220641",
+              "sexo": "",
+              "telefone_celular": "21111111111",
+              "telefone_principal": null
+            },
+            "cliente_obs": null,
+            "cupom_desconto": null,
+            "data_criacao": "2022-10-31T12:28:05.704751",
+            "data_expiracao": "2022-11-06T12:28:05.782308",
+            "data_modificacao": "2022-10-31T12:28:12.653648",
+            "endereco_entrega": {
+              "bairro": "Bonsucesso",
+              "cep": "21041040",
+              "cidade": "Rio de Janeiro",
+              "cnpj": null,
+              "complemento": null,
+              "cpf": "14093771723",
+              "endereco": "Avenida Nova York",
+              "estado": "RJ",
+              "id": 51870053,
+              "ie": "isento",
+              "nome": "CLiente Teste",
+              "numero": "1",
+              "pais": "Brasil",
+              "razao_social": null,
+              "referencia": null,
+              "rg": null,
+              "tipo": "PF"
+            },
+            "envios": [
+              {
+                "data_criacao": "2022-10-31T12:28:05.722569",
+                "data_modificacao": "2022-10-31T12:28:05.722584",
+                "forma_envio": {
+                  "code": "PAC",
+                  "id": 141909,
+                  "nome": "Enviali",
+                  "tipo": "PAC "
+                },
+                "id": 69291055,
+                "objeto": null,
+                "prazo": 7,
+                "valor": "21.38"
+              }
+            ],
+            "id_anymarket": null,
+            "id_externo": null,
+            "itens": [
+              {
+                "altura": 2,
+                "disponibilidade": 0,
+                "id": 156487061,
+                "largura": 12,
+                "linha": 1,
+                "nome": "Casaco infantil",
+                "pedido": "/api/v1/pedido/165",
+                "peso": "0.450",
+                "preco_cheio": "12.0000",
+                "preco_custo": null,
+                "preco_promocional": "11.1000",
+                "preco_subtotal": "11.1000",
+                "preco_venda": "11.1000",
+                "produto": {
+                  "id_externo": 88568855,
+                  "resource_uri": "/api/v1/produto/88568855?id_externo=1"
+                },
+                "produto_pai": "/api/v1/produto/182904918",
+                "profundidade": 6,
+                "quantidade": "1.000",
+                "sku": "casaco-azul-tam-m666",
+                "tipo": "atributo_opcao"
+              }
+            ],
+            "numero": 170,
+            "pagamentos": [
+              {
+                "authorization_code": null,
+                "banco": null,
+                "bandeira": "Mastercard",
+                "codigo_retorno_gateway": null,
+                "forma_pagamento": {
+                  "codigo": "pagsegurov2",
+                  "configuracoes": {
+                    "ativo": true,
+                    "disponivel": true
+                  },
+                  "id": 24,
+                  "imagem": "https://cdn.awsli.com.br/production/static/painel/img/formas-de-pagamento/pagsegurov2-logo.png",
+                  "nome": "PagSeguro V2",
+                  "resource_uri": "/api/v1/pagamento/24"
+                },
+                "id": 69291176,
+                "identificador_id": null,
+                "mensagem_gateway": null,
+                "pagamento_tipo": "creditCard",
+                "parcelamento": {
+                  "numero_parcelas": 1,
+                  "valor_parcela": 32.48
+                },
+                "transacao_id": null,
+                "valor": "32.48",
+                "valor_pago": "32.48"
+              }
+            ],
+            "peso_real": "0.450",
+            "resource_uri": "/api/v1/pedido/165",
+            "situacao": {
+              "aprovado": false,
+              "cancelado": true,
+              "codigo": "pedido_cancelado",
+              "final": true,
+              "id": 8,
+              "nome": "Pedido Cancelado",
+              "notificar_comprador": true,
+              "padrao": false,
+              "resource_uri": "/api/v1/situacao/8"
+            },
+            "utm_campaign": null,
+            "valor_desconto": "0.00",
+            "valor_envio": "21.38",
+            "valor_subtotal": "11.10",
+            "valor_total": "32.48"
+          }
       } catch(e){
           console.log("Não foi possível receber produto específico")
           console.log(e)
@@ -534,15 +709,18 @@ async function comparaPedidos(){
       }
 
       for (let i = 0; i < respostaPedidoEspecifico['itens'].length; i = i + 1) { 
+        console.log(respostaPedidoEspecifico['itens'].length)
 
-        console.log("i>>>",i,"i<<<")
+        console.log("Protudo", i, " do pedido", respostaPedidoEspecifico.numero )
         console.log(respostaPedidoEspecifico['itens'][i].sku)
         let verify = pedID.includes(respostaPedidoEspecifico.numero)
         let verify2 = inovaBarcodes.includes((respostaPedidoEspecifico['itens'][i].sku.toUpperCase()))
         console.log(verify)
         console.log(verify2)
 
-        indexPedidoEspecifico = inovaBarcodes.indexOf(respostaPedidoEspecifico['itens'][i].sku)
+        indexPedidoEspecifico = inovaBarcodes.indexOf(respostaPedidoEspecifico['itens'][i].sku.toUpperCase())
+
+        console.log(indexPedidoEspecifico)
 
 
         const verify3 = pedID.reduce((n, val) => {
